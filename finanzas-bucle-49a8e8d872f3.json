@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "finanzas-bucle",
+  "private_key_id": "49a8e8d872f36b4d8a3f7d9521d18c2ed2000499",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDN62lfNGKCjw72\n+5loXvKtF7JFP9zSXdoSQizf+eQ0DHX1jP7pEgeKprDv9/sxevbbet8xtFLyi62z\nb+lHD1vwnOc6rY8qy/V+92YLnDHdsINv3Hp5brpVQpOL+QgUxUDjqZlGfad6sbPR\n4odkDAEFjd7pctNoogV3D5+bdF6hP/3vZm8VH2golrEU62RSEP6RFnJy+ey2dXtC\nZ6EeUeqzPLvHtCnhxRFbv+txxZXykpOIpD3jcIxQDaCwcakUhashCWAGSnM5n57y\n99BD0RR/+fcoK8Zt83MC/CkIut+TL4aUO4FnMfzdlt+xi4YPy9TbPDYMsNC63pgd\nQhb7/fLfAgMBAAECggEAXKtsXN2Q1au28tywocFVGiO3ZSXD5WI6MQxZ8KQfmHLh\nJRQCZfZosXOp3hyuDYsGjCiESHSb/a5xifa7t3CIkkSyZPxVmU93mF+TK3dsE5YL\n2KwS7BIyRgtzpkL46YwJ00rwgUIsPHG7eKGnB5XFYfACWPIFhSmhJv8/d3DL42m/\nYapRl9GKr8gnBmghuu2zLs2Fl6xmT+09tcOvkltPkdoihHU7V9dy1B3g/EP6GR0+\nt5D1MJg6gVrooNviE7wtrVGYvRGLRhziq7PsK/abzBChhOqPys4IW/r6MLb+Dw4v\nzCPcu/Wm7me0NrnKx8y/ckY+cMvQpaUKX+TViWlP1QKBgQD2E0uy9QM4IE99Sp4I\n8xmZcYVhGirNM0gP34X32ZdLenbQfvSi4ZdodmaIdm2ol5VKgEndcgEGfV8YpVtS\nA3oG7UQLt4n4tk7aVBsmWkQvnHo0QhuiMw9PrvDA4g2QY9t7IewXOAhrMSNm5Knh\nkQX1ORZeRBgsEoveuV7ZUVu0OwKBgQDWOYLelVbhhAP6c1C+xtkIJhVfKQs0kSST\n7PLp9HRDdOjuNV9cQGyeJk69aXB6uUwyDeXgpPtXed2bXMYEXjYzGnrIHPYtkZ09\nWkFhvFssaehZSkn18hylnPhQYA7eaCPrn419ckjtEWNg24QBBH/OtRpf+q1MJi4E\nTW05u4AFrQKBgQCzEWmVydxU3JZbu4/zPUyUr9p6xfr9pmK7QlKQASSrBWwu3yQQ\n3485smd8yImWFPDL7T1TS2HZoiQwoCwrK2KCZeiNijt55NjO4kN7jlZuOzVmj/Di\nALwUpV6HTjjGqRQPr6jJYLonnvN/Lck93zXxtGBFqtHYSIrGQij2hdDw/wKBgBHy\nC2Z9+CM4HeUzF8aDfdbS6eNo2slyhy/lH4w9sCeeeYzK58wgkXjGGL6BQKznLNzc\nkS86Ytu3F7tWEDh5c+zgAP0WgADdO+DR2LxJPRIBZTdlo8B4obG17o89HMHA05F/\ncijaFAXX+Q06FlrHd7VnMmhr5WyFnkE6AzZc4KKZAoGBAMkHhh5BKv9rV5eVn1el\n/NCKQlBFcvhnhx5lBtIOMQ+8VXFWR8/S09rgug/+mGfbjclmiO7NAT3isLeq2r8k\ndb7n8Z+Bzn+AU8T/C4ZX/7oMqB0TSJCLWNddlWCqo1WaLKD2EhiC+RM9/G7j+6zd\no0oE2dsyTqjghi5NC48+oeo6\n-----END PRIVATE KEY-----\n",
+  "client_email": "bot-finanzas@finanzas-bucle.iam.gserviceaccount.com",
+  "client_id": "114352580166847652284",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bot-finanzas%40finanzas-bucle.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

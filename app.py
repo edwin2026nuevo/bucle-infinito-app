@@ -138,7 +138,7 @@ st.markdown(f'''
         gap: 8px;
     }}
 
-    /* GRID HTML NATIVO PARA LOS 3 BOLSILLOS (NUNCA SE APLASTA EN MÓVIL) */
+    /* GRID HTML NATIVO PARA LOS 3 BOLSILLOS */
     .pockets-grid {{
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -416,14 +416,14 @@ st.markdown(f'''
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
 
     /* =====================================================================
-       DISEÑO MÓVIL PURO (<= 820px): APILADO VERTICAL LIMPIO AL 100%
+       DISEÑO MÓVIL 100% FULL-WIDTH (<= 820px)
        ===================================================================== */
     @media (max-width: 820px) {{
         .block-container {{
             padding-top: 0.8rem !important;
             padding-left: 0.9rem !important;
             padding-right: 0.9rem !important;
-            padding-bottom: 2rem !important;
+            padding-bottom: 2.2rem !important;
         }}
         .top-navbar {{
             margin-bottom: 14px;
@@ -439,20 +439,32 @@ st.markdown(f'''
             font-size: 18px;
         }}
 
-        /* 1. Los 3 bolsillos se apilan en 1 sola columna al 100% */
+        /* 1. Apilar las columnas principales (col_izq y col_der) al 100% del ancho */
+        div[data-testid="stHorizontalBlock"]:has(.pockets-grid) {{
+            flex-direction: column !important;
+            gap: 12px !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(.pockets-grid) > div[data-testid="column"],
+        div[data-testid="stHorizontalBlock"]:has(.pockets-grid) > div[data-testid="stColumn"] {{
+            width: 100% !important;
+            min-width: 100% !important;
+            flex: 1 1 100% !important;
+        }}
+
+        /* 2. Los 3 bolsillos al 100% de ancho */
         .pockets-grid {{
             grid-template-columns: 1fr !important;
             gap: 10px !important;
         }}
         .pocket-card {{
             min-height: 92px;
-            padding: 14px 18px;
+            padding: 15px 18px;
         }}
         .pocket-amount {{
             font-size: 25px;
         }}
 
-        /* 2. Los 6 iconos de navegación en cuadrícula 3x2 */
+        /* 3. Los 6 iconos de navegación en cuadrícula 3x2 al 100% de ancho */
         div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -470,31 +482,37 @@ st.markdown(f'''
             border-radius: 14px;
         }}
 
-        /* 3. Botones + INGRESO y − EGRESO en 2 columnas iguales al 100% */
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
+        /* 4. Botones + INGRESO y − EGRESO en fila completa 50% / 50% debajo */
+        div[data-testid="column"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"],
+        div[data-testid="stColumn"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"] {{
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 10px !important;
+            gap: 12px !important;
             width: 100% !important;
-        }}
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
-            width: 100% !important;
-            min-width: 0 !important;
         }}
         div[class*="st-key-btn_in_big"] button,
         div[class*="st-key-btn_out_big"] button {{
-            height: 56px !important;
+            height: 58px !important;
             border-radius: 14px !important;
             width: 100% !important;
         }}
         div[class*="st-key-btn_in_big"] button p,
         div[class*="st-key-btn_out_big"] button p {{
-            font-size: 15px !important;
+            font-size: 16px !important;
         }}
 
+        /* 5. Formulario con botón completo sin texto cortado */
+        div[data-testid="stForm"] {{
+            padding: 16px !important;
+            width: 100% !important;
+        }}
         div[data-testid="stFormSubmitButton"] button {{
-            margin-top: 8px !important;
+            margin-top: 10px !important;
             height: 46px !important;
+            width: 100% !important;
+        }}
+        div[data-testid="stFormSubmitButton"] button p {{
+            white-space: nowrap !important;
         }}
     }}
 </style>
@@ -584,7 +602,7 @@ st.markdown(f'<div class="top-navbar"><div class="brand-logo"><div class="brand-
 col_izq, col_der = st.columns([4.3, 1], gap="medium")
 
 with col_izq:
-    # LOS 3 BOLSILLOS EN UN SOLO BLOQUE HTML GRID (100% INMUNE A RECORTE EN MÓVIL)
+    # LOS 3 BOLSILLOS EN BLOQUE HTML GRID
     pockets_html = f'''
     <div class="pockets-grid">
         <div class="pocket-card">
@@ -779,9 +797,6 @@ with col_izq:
 
 with col_der:
     # BOTONES GIGANTES
-    b_in_col, b_out_col = st.columns(1) if False else (st.container(), st.container())
-    # En PC van uno debajo del otro; en móvil los ponemos en 2 columnas reales
-    btn_c1, btn_c2 = st.columns(2) if False else (st.container(), st.container())
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
         st.session_state.seccion_activa = "Tablero"

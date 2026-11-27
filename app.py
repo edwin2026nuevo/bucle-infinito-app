@@ -70,11 +70,7 @@ st.markdown(f'''
         color: #16243e;
     }}
     header[data-testid="stHeader"] {{background: transparent;}}
-    .block-container {{
-        padding-top: 1.4rem;
-        padding-bottom: 2.5rem;
-        max-width: 1260px;
-    }}
+    .block-container {{padding-top: 1.4rem; padding-bottom: 2.5rem; max-width: 1260px;}}
 
     /* NAVBAR SUPERIOR */
     .top-navbar {{
@@ -420,95 +416,101 @@ st.markdown(f'''
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
 
     /* =====================================================================
-       DISEÑO MÓVIL COMPACTO Y NÍTIDO (<= 850px)
+       SOLUCIÓN DEFINITIVA PARA MÓVIL (<= 850px):
+       SIN COLUMNAS ANIDADAS DE STREAMLIT + CONTENEDORES AL 100%
        ===================================================================== */
     @media screen and (max-width: 850px) {{
         .block-container {{
-            padding-top: 0.7rem !important;
+            padding-top: 0.8rem !important;
             padding-left: 0.85rem !important;
             padding-right: 0.85rem !important;
-            padding-bottom: 2rem !important;
+            padding-bottom: 2.5rem !important;
             max-width: 100% !important;
         }}
         .top-navbar {{
-            margin-bottom: 12px;
-            gap: 8px;
+            margin-bottom: 14px !important;
+            gap: 8px !important;
         }}
         .brand-icon {{
-            width: 34px;
-            height: 34px;
-            font-size: 17px;
-            border-radius: 10px;
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 18px !important;
+            border-radius: 10px !important;
         }}
         .brand-text {{
-            font-size: 17px;
-        }}
-        .cloud-badge, .user-pill {{
-            font-size: 11px;
-            padding: 5px 11px;
+            font-size: 18px !important;
         }}
 
-        /* 1. Los 3 bolsillos apilados al 100% del ancho de pantalla */
+        /* 1. Los 3 bolsillos ocupan 100% del ancho uno debajo del otro */
         .pockets-grid {{
             grid-template-columns: 1fr !important;
             gap: 10px !important;
+            width: 100% !important;
         }}
         .pocket-card {{
-            min-height: 86px;
-            padding: 14px 16px;
+            min-height: 90px !important;
+            padding: 14px 16px !important;
+            width: 100% !important;
         }}
         .pocket-amount {{
-            font-size: 24px;
+            font-size: 24px !important;
         }}
 
-        /* 2. Los 6 botones de navegación en cuadrícula 3x2 compacta */
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
-            display: grid !important;
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            gap: 10px 6px !important;
-            width: 100% !important;
-        }}
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
-            width: 100% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
-        }}
-        .app-nav-card, .app-nav-card-active {{
-            width: 52px;
-            height: 52px;
-            font-size: 22px;
-            border-radius: 14px;
-        }}
-
-        /* 3. Botones + INGRESO y − EGRESO en 2 columnas limpias 50% / 50% */
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
+        /* 2. Forzar ancho 100% en cualquier bloque de columnas de Streamlit */
+        div[data-testid="stHorizontalBlock"] {{
+            flex-wrap: wrap !important;
             gap: 10px !important;
             width: 100% !important;
         }}
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
+        div[data-testid="stHorizontalBlock"] > div {{
             width: 100% !important;
-            min-width: 0 !important;
+            min-width: 100% !important;
             max-width: 100% !important;
+            flex: 1 1 100% !important;
+        }}
+
+        /* 3. Excepción para los 6 botones de navegación: 3 por fila (32% cada uno) */
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
+            width: 31% !important;
+            min-width: 31% !important;
+            max-width: 33% !important;
+            flex: 1 1 31% !important;
+        }}
+        .app-nav-card, .app-nav-card-active {{
+            width: 54px !important;
+            height: 54px !important;
+            font-size: 22px !important;
+            border-radius: 14px !important;
+        }}
+
+        /* 4. Excepción para los botones + INGRESO y − EGRESO: 2 por fila (48% cada uno) */
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
+            width: 48% !important;
+            min-width: 48% !important;
+            max-width: 49% !important;
+            flex: 1 1 48% !important;
         }}
         div[class*="st-key-btn_in_big"] button,
         div[class*="st-key-btn_out_big"] button {{
-            height: 54px !important;
+            height: 56px !important;
             border-radius: 14px !important;
-            width: 100% !important;
         }}
         div[class*="st-key-btn_in_big"] button p,
         div[class*="st-key-btn_out_big"] button p {{
             font-size: 15px !important;
         }}
 
+        /* 5. Formulario y Tabla al 100% */
         div[data-testid="stForm"] {{
             padding: 16px !important;
+            width: 100% !important;
         }}
         div[data-testid="stFormSubmitButton"] button {{
             margin-top: 8px !important;
-            height: 44px !important;
+            height: 46px !important;
+        }}
+        .table-responsive-wrapper {{
+            width: 100% !important;
         }}
     }}
 </style>
@@ -594,12 +596,11 @@ abonos_deuda = abs(df[df["Categoría"] == "Deuda"]["Monto_Neto"].sum())
 estado_nube = "☁️ Sincronizado" if usar_google_sheets() else "💻 Local"
 st.markdown(f'<div class="top-navbar"><div class="brand-logo"><div class="brand-icon">🔄</div><div class="brand-text">BUCLE<span>INFINITO</span></div></div><div class="user-area"><div class="cloud-badge">{estado_nube}</div><div class="user-pill">🇨🇴 Edwin Alexander</div></div></div>', unsafe_allow_html=True)
 
-# --- ESTRUCTURA PRINCIPAL ---
-# En lugar de anidar columnas pesadas, usamos estructura directa que funciona en PC y móvil
+# --- ESTRUCTURA SIN COLUMNAS ANIDADAS PARA EVITAR BUGS EN MÓVIL ---
+# 1. LOS 3 BOLSILLOS (Ocupan todo el ancho de la izquierda en PC y 100% en móvil)
 col_izq, col_der = st.columns([4.3, 1], gap="medium")
 
 with col_izq:
-    # 1. LOS 3 BOLSILLOS EN UN SOLO BLOQUE HTML GRID
     pockets_html = f'''
     <div class="pockets-grid">
         <div class="pocket-card">
@@ -630,9 +631,44 @@ with col_izq:
     '''
     st.markdown(pockets_html, unsafe_allow_html=True)
 
-    st.write("")
+with col_der:
+    b_in, b_out = st.columns([1, 1], gap="small") if False else (st.container(), st.container())
+    # Fila de botones de acción rápida
+    c_btn1, c_btn2 = st.columns(2, gap="small")
+    with c_btn1:
+        if st.button("+ INGRESO", key="btn_in_big"):
+            st.session_state.modo_registro = "INGRESO"
+            st.session_state.seccion_activa = "Tablero"
+            st.rerun()
+    with c_btn2:
+        if st.button("− EGRESO", key="btn_out_big"):
+            st.session_state.modo_registro = "EGRESO"
+            st.session_state.seccion_activa = "Tablero"
+            st.rerun()
 
-    # 2. BOTONES DE NAVEGACIÓN TIPO APP
+# En PC queremos que + INGRESO y − EGRESO vayan uno debajo del otro en col_der, pero en móvil vayan lado a lado
+st.markdown('''
+<style>
+@media screen and (min-width: 851px) {
+    div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {
+        flex-direction: column !important;
+        gap: 14px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+}
+</style>
+''', unsafe_allow_html=True)
+
+st.write("")
+
+# 2. RESTO DEL CONTENIDO ALINEADO AL ANCHO DE col_izq EN PC Y 100% EN MÓVIL
+col_main, col_spacer = st.columns([4.3, 1], gap="medium")
+
+with col_main:
+    # BOTONES DE NAVEGACIÓN TIPO APP
     nav_cols = st.columns(6, gap="small")
     secciones = [
         ("Tablero", "🎛️", "Tablero"),
@@ -652,7 +688,7 @@ with col_izq:
 
     st.write("")
 
-    # 3. PANEL DE REGISTRO O SUB-SECCIÓN ACTIVA
+    # PANEL DE REGISTRO O SUB-SECCIÓN ACTIVA
     if st.session_state.seccion_activa == "Tablero":
         if st.session_state.modo_registro == "INGRESO":
             with st.form("form_ingreso", clear_on_submit=True):
@@ -772,7 +808,7 @@ with col_izq:
 
     st.write("")
 
-    # 4. TABLA CON DESPLAZAMIENTO HORIZONTAL SUAVE
+    # TABLA ENVUELTA EN CONTENEDOR RESPONSIVE
     filas_html = ""
     for idx, row in df.head(25).iterrows():
         p1_txt = f"-${abs(row['Peaje_1']):,.0f}" if row["Peaje_1"] != 0 else "$0"
@@ -791,23 +827,3 @@ with col_izq:
 
     tabla_completa = f'<div class="table-responsive-wrapper"><table class="custom-table"><thead><tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>1% Peaje</th><th>9% Peaje</th><th>Monto Neto</th><th>Bolsillo</th></tr></thead><tbody>{filas_html}</tbody></table></div>'
     st.markdown(tabla_completa, unsafe_allow_html=True)
-
-with col_der:
-    # BOTONES GIGANTES
-    b_col1, b_col2 = st.columns(1) if False else (st.container(), st.container())
-    # Ponemos cada botón en una columna propia dentro de un stHorizontalBlock para poder ponerlos 1fr 1fr en móvil
-    bc1, bc2 = st.columns([1, 1]) if False else (None, None)
-
-# Reemplazamos col_der para usar un bloque horizontal propio que en móvil se vuelve 1fr 1fr
-with col_der:
-    if st.button("+ INGRESO", key="btn_in_big"):
-        st.session_state.modo_registro = "INGRESO"
-        st.session_state.seccion_activa = "Tablero"
-        st.rerun()
-
-    st.write("")
-
-    if st.button("− EGRESO", key="btn_out_big"):
-        st.session_state.modo_registro = "EGRESO"
-        st.session_state.seccion_activa = "Tablero"
-        st.rerun()

@@ -150,6 +150,8 @@ st.markdown(f'''
         justify-content: space-between;
         align-items: center;
         height: 118px;
+        width: 100%;
+        box-sizing: border-box;
         transition: transform 0.2s ease, border-color 0.2s ease;
     }}
     .pocket-card:hover {{
@@ -158,6 +160,11 @@ st.markdown(f'''
     }}
     .pocket-card-gold {{
         border-bottom: 5px solid #f0a518 !important;
+    }}
+    .pocket-info {{
+        min-width: 0;
+        flex: 1;
+        padding-right: 8px;
     }}
     .pocket-title {{
         font-size: 12.5px;
@@ -267,6 +274,7 @@ st.markdown(f'''
         width: 100% !important;
         text-align: center !important;
         text-shadow: 0 1px 4px rgba(0,0,0,0.28);
+        white-space: nowrap !important;
     }}
 
     /* BOTONES GIGANTES INGRESO Y EGRESO */
@@ -294,6 +302,7 @@ st.markdown(f'''
         letter-spacing: 0.6px !important;
         text-align: center !important;
         margin: 0 !important;
+        white-space: nowrap !important;
     }}
     div[class*="st-key-btn_in_big"] button:hover {{
         background: linear-gradient(145deg, #12c482, #0c9662) !important;
@@ -324,6 +333,7 @@ st.markdown(f'''
         letter-spacing: 0.6px !important;
         text-align: center !important;
         margin: 0 !important;
+        white-space: nowrap !important;
     }}
     div[class*="st-key-btn_out_big"] button:hover {{
         background: linear-gradient(145deg, #dc4f4f, #b53232) !important;
@@ -358,7 +368,7 @@ st.markdown(f'''
         background-color: #24385c !important;
     }}
 
-    /* CONTENEDOR DE TABLA CON SCROLL HORIZONTAL SUAVE EN MÓVIL */
+    /* TABLA CON SCROLL HORIZONTAL EN MÓVIL */
     .table-responsive-wrapper {{
         width: 100%;
         overflow-x: auto;
@@ -401,16 +411,15 @@ st.markdown(f'''
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
 
     /* =====================================================================
-       OPTIMIZACIÓN RESPONSIVE PARA PANTALLAS DE CELULAR (<= 768px)
+       FIX REAL PARA CELULAR (<= 768px): ROMPER COLUMNAS ESTRECHAS DE STREAMLIT
        ===================================================================== */
     @media (max-width: 768px) {{
         .block-container {{
-            padding-top: 0.9rem !important;
-            padding-left: 0.85rem !important;
-            padding-right: 0.85rem !important;
-            padding-bottom: 1.5rem !important;
+            padding-top: 0.8rem !important;
+            padding-left: 0.9rem !important;
+            padding-right: 0.9rem !important;
+            padding-bottom: 2rem !important;
         }}
-        /* Encabezado compacto */
         .top-navbar {{
             margin-bottom: 14px;
             gap: 8px;
@@ -424,37 +433,38 @@ st.markdown(f'''
         .brand-text {{
             font-size: 18px;
         }}
-        .cloud-badge {{
-            padding: 5px 10px;
-            font-size: 11px;
+
+        /* 1. Forzar que todos los bloques horizontales de Streamlit se apilen al 100% de ancho */
+        div[data-testid="stHorizontalBlock"] {{
+            flex-direction: column !important;
+            gap: 10px !important;
         }}
-        .user-pill {{
-            padding: 6px 12px;
-            font-size: 12px;
+        div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
+        div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {{
+            width: 100% !important;
+            min-width: 100% !important;
+            flex: 1 1 100% !important;
         }}
 
-        /* Tarjetas de bolsillos apiladas cómodamente sin exceso de altura */
+        /* 2. Tarjetas de bolsillos al 100% del ancho sin recortar iconos ni cifras */
         .pocket-card {{
+            width: 100% !important;
             height: auto !important;
             min-height: 92px;
-            padding: 14px 16px;
-            margin-bottom: 4px;
+            padding: 15px 18px;
         }}
         .pocket-amount {{
-            font-size: 24px;
-        }}
-        .pocket-line-icon {{
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
+            font-size: 25px;
         }}
 
-        /* Cuadrícula 3x2 para los 6 iconos de navegación en móvil */
+        /* 3. Excepción: los 6 botones de navegación en cuadrícula limpia 3x2 al 100% */
         div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
             display: grid !important;
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 10px 6px !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 12px 6px !important;
+            width: 100% !important;
         }}
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div[data-testid="column"],
         div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div[data-testid="stColumn"] {{
             width: 100% !important;
             min-width: 0 !important;
@@ -465,42 +475,38 @@ st.markdown(f'''
             font-size: 23px;
             border-radius: 14px;
         }}
+        div[class*="st-key-nav_"] button p {{
+            font-size: 12px !important;
+        }}
 
-        /* Botones + INGRESO y − EGRESO: lado a lado y táctiles (64px alto) */
+        /* 4. Botones + INGRESO y − EGRESO en 2 columnas iguales al 100% del ancho */
+        div[data-testid="column"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"],
         div[data-testid="stColumn"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"] {{
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
-            margin-top: 8px !important;
-        }}
-        div[data-testid="stColumn"]:has(div[class*="st-key-btn_in_big"]) div[data-testid="stVerticalBlockBorderWrapper"] {{
             width: 100% !important;
+            margin-top: 4px !important;
         }}
         div[class*="st-key-btn_in_big"] button,
         div[class*="st-key-btn_out_big"] button {{
-            height: 64px !important;
+            height: 58px !important;
             border-radius: 14px !important;
+            padding: 0 8px !important;
+            width: 100% !important;
         }}
         div[class*="st-key-btn_in_big"] button p,
         div[class*="st-key-btn_out_big"] button p {{
-            font-size: 16px !important;
+            font-size: 15px !important;
         }}
 
-        /* Formulario más compacto y botón de envío sin margen excesivo */
+        /* 5. Formulario compacto */
         div[data-testid="stForm"] {{
-            padding: 16px 16px;
+            padding: 16px;
         }}
         div[data-testid="stFormSubmitButton"] button {{
-            margin-top: 10px !important;
+            margin-top: 8px !important;
             height: 46px !important;
-        }}
-
-        /* Tabla cómoda para deslizar con el dedo */
-        .custom-table {{
-            font-size: 12.5px;
-        }}
-        .custom-table th, .custom-table td {{
-            padding: 10px 10px;
         }}
     }}
 </style>
@@ -593,11 +599,11 @@ with col_izq:
     # TARJETAS DE BOLSILLOS
     b1, b2, b3 = st.columns(3, gap="medium")
     with b1:
-        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">Bóveda Vitalicia (1%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{boveda_1:,.0f}</span></div><div class="pocket-sub">Capital intocable de por vida</div></div><div class="pocket-line-icon">🔒</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pocket-card"><div class="pocket-info"><div class="pocket-title">Bóveda Vitalicia (1%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{boveda_1:,.0f}</span></div><div class="pocket-sub">Capital intocable de por vida</div></div><div class="pocket-line-icon">🔒</div></div>', unsafe_allow_html=True)
     with b2:
-        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">Fondo Emergencia / Inv. (9%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{fondo_9:,.0f}</span></div><div class="pocket-sub">Colchón y capital de inversión</div></div><div class="pocket-line-icon">🛡️</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pocket-card"><div class="pocket-info"><div class="pocket-title">Fondo Emergencia / Inv. (9%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{fondo_9:,.0f}</span></div><div class="pocket-sub">Colchón y capital de inversión</div></div><div class="pocket-line-icon">🛡️</div></div>', unsafe_allow_html=True)
     with b3:
-        st.markdown(f'<div class="pocket-card pocket-card-gold"><div><div class="pocket-title">Efectivo Libre</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{movs_libre:,.0f}</span></div><div class="pocket-sub">Disponible tras peajes</div></div><div class="pocket-line-icon">👛</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pocket-card pocket-card-gold"><div class="pocket-info"><div class="pocket-title">Efectivo Libre</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{movs_libre:,.0f}</span></div><div class="pocket-sub">Disponible tras peajes</div></div><div class="pocket-line-icon">👛</div></div>', unsafe_allow_html=True)
 
     st.write("")
 
@@ -741,7 +747,7 @@ with col_izq:
 
     st.write("")
 
-    # TABLA ENVUELTA EN CONTENEDOR RESPONSIVE PARA SCROLL HORIZONTAL LIMPIO EN CELULAR
+    # TABLA ENVUELTA EN CONTENEDOR RESPONSIVE
     filas_html = ""
     for idx, row in df.head(25).iterrows():
         p1_txt = f"-${abs(row['Peaje_1']):,.0f}" if row["Peaje_1"] != 0 else "$0"
@@ -762,7 +768,7 @@ with col_izq:
     st.markdown(tabla_completa, unsafe_allow_html=True)
 
 with col_der:
-    # BOTONES GIGANTES (En PC verticales a la derecha; en celular lado a lado cómodos)
+    # BOTONES GIGANTES
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
         st.session_state.seccion_activa = "Tablero"

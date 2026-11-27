@@ -80,6 +80,7 @@ st.markdown(f'''
         margin-bottom: 22px;
         flex-wrap: wrap;
         gap: 12px;
+        width: 100%;
     }}
     .brand-logo {{
         display: flex;
@@ -353,6 +354,7 @@ st.markdown(f'''
         border: none;
         border-bottom: 5px solid #e5e9f0;
         box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        width: 100%;
     }}
     div[data-testid="stForm"] label {{
         color: #16243e !important;
@@ -416,15 +418,16 @@ st.markdown(f'''
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
 
     /* =====================================================================
-       OVERRIDE AGRESIVO PARA CELULAR (<= 820px) CONTRA ESTILOS INLINE DE STREAMLIT
+       ESTÁNDAR RESPONSIVE REAL PARA MÓVIL (<= 850px)
        ===================================================================== */
-    @media (max-width: 820px) {{
+    @media screen and (max-width: 850px) {{
         .block-container {{
             padding-top: 0.8rem !important;
-            padding-left: 0.9rem !important;
-            padding-right: 0.9rem !important;
+            padding-left: 0.85rem !important;
+            padding-right: 0.85rem !important;
             padding-bottom: 2.2rem !important;
             max-width: 100vw !important;
+            overflow-x: hidden !important;
         }}
         .top-navbar {{
             margin-bottom: 14px;
@@ -440,13 +443,15 @@ st.markdown(f'''
             font-size: 18px;
         }}
 
-        /* Apilar TODOS los contenedores horizontales de Streamlit al 100% de ancho */
+        /* Anular TODOS los anchos en línea de Streamlit (style="width: ...") */
         [data-testid="stHorizontalBlock"] {{
             flex-direction: column !important;
             flex-wrap: nowrap !important;
-            gap: 12px !important;
             width: 100% !important;
+            gap: 10px !important;
         }}
+        [data-testid="stHorizontalBlock"] > [data-testid="column"],
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
         [data-testid="stHorizontalBlock"] > div {{
             width: 100% !important;
             min-width: 100% !important;
@@ -454,7 +459,7 @@ st.markdown(f'''
             flex: 1 1 100% !important;
         }}
 
-        /* Bolsillos en 1 columna al 100% */
+        /* Los 3 bolsillos al 100% de borde a borde */
         .pockets-grid {{
             grid-template-columns: 1fr !important;
             gap: 10px !important;
@@ -469,14 +474,16 @@ st.markdown(f'''
             font-size: 25px;
         }}
 
-        /* Excepción 1: Los 6 botones de navegación en cuadrícula 3x2 al 100% */
-        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
+        /* Excepción 1: Los 6 iconos de navegación en cuadrícula 3x2 al 100% */
+        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) {{
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
             gap: 12px 6px !important;
             width: 100% !important;
         }}
-        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
+        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) > [data-testid="column"],
+        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) > [data-testid="stColumn"],
+        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) > div {{
             width: 100% !important;
             min-width: 0 !important;
             max-width: 100% !important;
@@ -488,17 +495,18 @@ st.markdown(f'''
             border-radius: 14px;
         }}
 
-        /* Excepción 2: Botones + INGRESO y - EGRESO lado a lado al 100% debajo */
-        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
+        /* Excepción 2: Botones + INGRESO y − EGRESO en fila completa 50% / 50% */
+        [data-testid="column"]:has([class*="st-key-btn_in_big"]) > [data-testid="stVerticalBlock"],
+        [data-testid="stColumn"]:has([class*="st-key-btn_in_big"]) > [data-testid="stVerticalBlock"] {{
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 10px !important;
+            gap: 12px !important;
             width: 100% !important;
         }}
-        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
+        [data-testid="column"]:has([class*="st-key-btn_in_big"]) [data-testid="stVerticalBlockBorderWrapper"],
+        [data-testid="stColumn"]:has([class*="st-key-btn_in_big"]) [data-testid="stVerticalBlockBorderWrapper"] {{
             width: 100% !important;
             min-width: 0 !important;
-            max-width: 100% !important;
         }}
         div[class*="st-key-btn_in_big"] button,
         div[class*="st-key-btn_out_big"] button {{
@@ -511,6 +519,7 @@ st.markdown(f'''
             font-size: 16px !important;
         }}
 
+        /* Formulario al 100% de borde a borde */
         div[data-testid="stForm"] {{
             padding: 16px !important;
             width: 100% !important;
@@ -802,8 +811,7 @@ with col_izq:
     st.markdown(tabla_completa, unsafe_allow_html=True)
 
 with col_der:
-    # DOS COLUMNAS PARA LOS BOTONES EN MÓVIL Y APILADOS EN PC
-    b_col1, b_col2 = st.columns(1), st.columns(1)
+    # BOTONES GIGANTES
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
         st.session_state.seccion_activa = "Tablero"

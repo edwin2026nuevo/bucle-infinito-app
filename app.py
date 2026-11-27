@@ -4,6 +4,7 @@ import datetime
 import urllib.parse
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -12,6 +13,20 @@ st.set_page_config(
     page_icon="🔄",
     layout="wide",
     initial_sidebar_state="collapsed"
+)
+
+# Forzar escala de escritorio en cualquier navegador (incluyendo celular en vertical)
+components.html(
+    '''
+    <script>
+        const meta = window.parent.document.querySelector('meta[name="viewport"]');
+        if (meta) {
+            meta.setAttribute('content', 'width=1260, initial-scale=0.32, user-scalable=yes');
+        }
+    </script>
+    ''',
+    height=0,
+    width=0
 )
 
 # --- SVG DE FONDO POTENTE ESTILO FINTECH ---
@@ -61,6 +76,12 @@ st.markdown(f'''
         font-family: 'Plus Jakarta Sans', sans-serif;
     }}
 
+    /* MANTENER ANCHO DE ESCRITORIO SIEMPRE (INDEPENDIENTE DEL DISPOSITIVO) */
+    html, body, .stApp, [data-testid="stAppViewContainer"], .main {{
+        min-width: 1220px !important;
+        overflow-x: auto !important;
+    }}
+
     .stApp {{
         background-color: #e88914;
         background-image: url("data:image/svg+xml;utf8,{bg_encoded}");
@@ -70,7 +91,12 @@ st.markdown(f'''
         color: #16243e;
     }}
     header[data-testid="stHeader"] {{background: transparent;}}
-    .block-container {{padding-top: 1.4rem; padding-bottom: 2.5rem; max-width: 1260px;}}
+    .block-container {{
+        padding-top: 1.4rem !important;
+        padding-bottom: 2.5rem !important;
+        min-width: 1220px !important;
+        max-width: 1260px !important;
+    }}
 
     /* NAVBAR SUPERIOR */
     .top-navbar {{
@@ -78,9 +104,7 @@ st.markdown(f'''
         justify-content: space-between;
         align-items: center;
         margin-bottom: 22px;
-        flex-wrap: wrap;
         gap: 12px;
-        width: 100%;
     }}
     .brand-logo {{
         display: flex;
@@ -139,7 +163,7 @@ st.markdown(f'''
         gap: 8px;
     }}
 
-    /* GRID HTML NATIVO PARA LOS 3 BOLSILLOS */
+    /* GRID DE LOS 3 BOLSILLOS */
     .pockets-grid {{
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -155,7 +179,7 @@ st.markdown(f'''
         display: flex;
         justify-content: space-between;
         align-items: center;
-        min-height: 118px;
+        height: 118px;
         width: 100%;
         box-sizing: border-box;
         transition: transform 0.2s ease, border-color 0.2s ease;
@@ -354,7 +378,6 @@ st.markdown(f'''
         border: none;
         border-bottom: 5px solid #e5e9f0;
         box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-        width: 100%;
     }}
     div[data-testid="stForm"] label {{
         color: #16243e !important;
@@ -375,15 +398,14 @@ st.markdown(f'''
         background-color: #24385c !important;
     }}
 
-    /* TABLA CON SCROLL HORIZONTAL EN MÓVIL */
+    /* TABLA */
     .table-responsive-wrapper {{
         width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
         border-radius: 18px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.12);
         border-bottom: 5px solid #e5e9f0;
         background-color: #ffffff;
+        overflow: hidden;
     }}
     .custom-table {{
         width: 100%;
@@ -416,120 +438,6 @@ st.markdown(f'''
     .txt-gold {{color: #d48817 !important; font-weight: 700;}}
     .txt-green {{color: #0d9c66 !important; font-weight: 700;}}
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
-
-    /* =====================================================================
-       ESTÁNDAR RESPONSIVE REAL PARA MÓVIL (<= 850px)
-       ===================================================================== */
-    @media screen and (max-width: 850px) {{
-        .block-container {{
-            padding-top: 0.8rem !important;
-            padding-left: 0.85rem !important;
-            padding-right: 0.85rem !important;
-            padding-bottom: 2.2rem !important;
-            max-width: 100vw !important;
-            overflow-x: hidden !important;
-        }}
-        .top-navbar {{
-            margin-bottom: 14px;
-            gap: 8px;
-        }}
-        .brand-icon {{
-            width: 36px;
-            height: 36px;
-            font-size: 18px;
-            border-radius: 10px;
-        }}
-        .brand-text {{
-            font-size: 18px;
-        }}
-
-        /* Anular TODOS los anchos en línea de Streamlit (style="width: ...") */
-        [data-testid="stHorizontalBlock"] {{
-            flex-direction: column !important;
-            flex-wrap: nowrap !important;
-            width: 100% !important;
-            gap: 10px !important;
-        }}
-        [data-testid="stHorizontalBlock"] > [data-testid="column"],
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
-        [data-testid="stHorizontalBlock"] > div {{
-            width: 100% !important;
-            min-width: 100% !important;
-            max-width: 100% !important;
-            flex: 1 1 100% !important;
-        }}
-
-        /* Los 3 bolsillos al 100% de borde a borde */
-        .pockets-grid {{
-            grid-template-columns: 1fr !important;
-            gap: 10px !important;
-            width: 100% !important;
-        }}
-        .pocket-card {{
-            min-height: 90px;
-            padding: 15px 18px;
-            width: 100% !important;
-        }}
-        .pocket-amount {{
-            font-size: 25px;
-        }}
-
-        /* Excepción 1: Los 6 iconos de navegación en cuadrícula 3x2 al 100% */
-        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) {{
-            display: grid !important;
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            gap: 12px 6px !important;
-            width: 100% !important;
-        }}
-        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) > [data-testid="column"],
-        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) > [data-testid="stColumn"],
-        [data-testid="stHorizontalBlock"]:has([class*="st-key-nav_"]) > div {{
-            width: 100% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
-        }}
-        .app-nav-card, .app-nav-card-active {{
-            width: 56px;
-            height: 56px;
-            font-size: 23px;
-            border-radius: 14px;
-        }}
-
-        /* Excepción 2: Botones + INGRESO y − EGRESO en fila completa 50% / 50% */
-        [data-testid="column"]:has([class*="st-key-btn_in_big"]) > [data-testid="stVerticalBlock"],
-        [data-testid="stColumn"]:has([class*="st-key-btn_in_big"]) > [data-testid="stVerticalBlock"] {{
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 12px !important;
-            width: 100% !important;
-        }}
-        [data-testid="column"]:has([class*="st-key-btn_in_big"]) [data-testid="stVerticalBlockBorderWrapper"],
-        [data-testid="stColumn"]:has([class*="st-key-btn_in_big"]) [data-testid="stVerticalBlockBorderWrapper"] {{
-            width: 100% !important;
-            min-width: 0 !important;
-        }}
-        div[class*="st-key-btn_in_big"] button,
-        div[class*="st-key-btn_out_big"] button {{
-            height: 58px !important;
-            border-radius: 14px !important;
-            width: 100% !important;
-        }}
-        div[class*="st-key-btn_in_big"] button p,
-        div[class*="st-key-btn_out_big"] button p {{
-            font-size: 16px !important;
-        }}
-
-        /* Formulario al 100% de borde a borde */
-        div[data-testid="stForm"] {{
-            padding: 16px !important;
-            width: 100% !important;
-        }}
-        div[data-testid="stFormSubmitButton"] button {{
-            margin-top: 10px !important;
-            height: 46px !important;
-            width: 100% !important;
-        }}
-    }}
 </style>
 ''', unsafe_allow_html=True)
 
@@ -790,7 +698,7 @@ with col_izq:
 
     st.write("")
 
-    # TABLA ENVUELTA EN CONTENEDOR RESPONSIVE
+    # TABLA
     filas_html = ""
     for idx, row in df.head(25).iterrows():
         p1_txt = f"-${abs(row['Peaje_1']):,.0f}" if row["Peaje_1"] != 0 else "$0"
@@ -811,11 +719,12 @@ with col_izq:
     st.markdown(tabla_completa, unsafe_allow_html=True)
 
 with col_der:
-    # BOTONES GIGANTES
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
         st.session_state.seccion_activa = "Tablero"
         st.rerun()
+
+    st.write("")
 
     if st.button("− EGRESO", key="btn_out_big"):
         st.session_state.modo_registro = "EGRESO"

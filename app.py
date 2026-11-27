@@ -14,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- SVG DE FONDO POTENTE ESTILO FINTECH (MONEDAS HEXAGONALES Y CURVAS DORADAS) ---
+# --- SVG DE FONDO POTENTE ESTILO FINTECH ---
 bg_svg = '''
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
   <defs>
@@ -61,7 +61,6 @@ st.markdown(f'''
         font-family: 'Plus Jakarta Sans', sans-serif;
     }}
 
-    /* FONDO POTENTE CON MONEDAS Y DESTELLOS DORADOS */
     .stApp {{
         background-color: #e88914;
         background-image: url("data:image/svg+xml;utf8,{bg_encoded}");
@@ -139,7 +138,13 @@ st.markdown(f'''
         gap: 8px;
     }}
 
-    /* TARJETAS DE BOLSILLOS CON BORDE INFERIOR */
+    /* GRID HTML NATIVO PARA LOS 3 BOLSILLOS (NUNCA SE APLASTA EN MÓVIL) */
+    .pockets-grid {{
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        width: 100%;
+    }}
     .pocket-card {{
         background-color: #ffffff;
         border-radius: 16px;
@@ -149,7 +154,7 @@ st.markdown(f'''
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 118px;
+        min-height: 118px;
         width: 100%;
         box-sizing: border-box;
         transition: transform 0.2s ease, border-color 0.2s ease;
@@ -164,7 +169,7 @@ st.markdown(f'''
     .pocket-info {{
         min-width: 0;
         flex: 1;
-        padding-right: 8px;
+        padding-right: 10px;
     }}
     .pocket-title {{
         font-size: 12.5px;
@@ -411,9 +416,9 @@ st.markdown(f'''
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
 
     /* =====================================================================
-       FIX REAL PARA CELULAR (<= 768px): ROMPER COLUMNAS ESTRECHAS DE STREAMLIT
+       DISEÑO MÓVIL PURO (<= 820px): APILADO VERTICAL LIMPIO AL 100%
        ===================================================================== */
-    @media (max-width: 768px) {{
+    @media (max-width: 820px) {{
         .block-container {{
             padding-top: 0.8rem !important;
             padding-left: 0.9rem !important;
@@ -434,38 +439,27 @@ st.markdown(f'''
             font-size: 18px;
         }}
 
-        /* 1. Forzar que todos los bloques horizontales de Streamlit se apilen al 100% de ancho */
-        div[data-testid="stHorizontalBlock"] {{
-            flex-direction: column !important;
+        /* 1. Los 3 bolsillos se apilan en 1 sola columna al 100% */
+        .pockets-grid {{
+            grid-template-columns: 1fr !important;
             gap: 10px !important;
         }}
-        div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
-        div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {{
-            width: 100% !important;
-            min-width: 100% !important;
-            flex: 1 1 100% !important;
-        }}
-
-        /* 2. Tarjetas de bolsillos al 100% del ancho sin recortar iconos ni cifras */
         .pocket-card {{
-            width: 100% !important;
-            height: auto !important;
             min-height: 92px;
-            padding: 15px 18px;
+            padding: 14px 18px;
         }}
         .pocket-amount {{
             font-size: 25px;
         }}
 
-        /* 3. Excepción: los 6 botones de navegación en cuadrícula limpia 3x2 al 100% */
+        /* 2. Los 6 iconos de navegación en cuadrícula 3x2 */
         div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
             gap: 12px 6px !important;
             width: 100% !important;
         }}
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div[data-testid="column"],
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div[data-testid="stColumn"] {{
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
             width: 100% !important;
             min-width: 0 !important;
         }}
@@ -475,24 +469,22 @@ st.markdown(f'''
             font-size: 23px;
             border-radius: 14px;
         }}
-        div[class*="st-key-nav_"] button p {{
-            font-size: 12px !important;
-        }}
 
-        /* 4. Botones + INGRESO y − EGRESO en 2 columnas iguales al 100% del ancho */
-        div[data-testid="column"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"],
-        div[data-testid="stColumn"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"] {{
+        /* 3. Botones + INGRESO y − EGRESO en 2 columnas iguales al 100% */
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
             width: 100% !important;
-            margin-top: 4px !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
+            width: 100% !important;
+            min-width: 0 !important;
         }}
         div[class*="st-key-btn_in_big"] button,
         div[class*="st-key-btn_out_big"] button {{
-            height: 58px !important;
+            height: 56px !important;
             border-radius: 14px !important;
-            padding: 0 8px !important;
             width: 100% !important;
         }}
         div[class*="st-key-btn_in_big"] button p,
@@ -500,10 +492,6 @@ st.markdown(f'''
             font-size: 15px !important;
         }}
 
-        /* 5. Formulario compacto */
-        div[data-testid="stForm"] {{
-            padding: 16px;
-        }}
         div[data-testid="stFormSubmitButton"] button {{
             margin-top: 8px !important;
             height: 46px !important;
@@ -596,14 +584,36 @@ st.markdown(f'<div class="top-navbar"><div class="brand-logo"><div class="brand-
 col_izq, col_der = st.columns([4.3, 1], gap="medium")
 
 with col_izq:
-    # TARJETAS DE BOLSILLOS
-    b1, b2, b3 = st.columns(3, gap="medium")
-    with b1:
-        st.markdown(f'<div class="pocket-card"><div class="pocket-info"><div class="pocket-title">Bóveda Vitalicia (1%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{boveda_1:,.0f}</span></div><div class="pocket-sub">Capital intocable de por vida</div></div><div class="pocket-line-icon">🔒</div></div>', unsafe_allow_html=True)
-    with b2:
-        st.markdown(f'<div class="pocket-card"><div class="pocket-info"><div class="pocket-title">Fondo Emergencia / Inv. (9%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{fondo_9:,.0f}</span></div><div class="pocket-sub">Colchón y capital de inversión</div></div><div class="pocket-line-icon">🛡️</div></div>', unsafe_allow_html=True)
-    with b3:
-        st.markdown(f'<div class="pocket-card pocket-card-gold"><div class="pocket-info"><div class="pocket-title">Efectivo Libre</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{movs_libre:,.0f}</span></div><div class="pocket-sub">Disponible tras peajes</div></div><div class="pocket-line-icon">👛</div></div>', unsafe_allow_html=True)
+    # LOS 3 BOLSILLOS EN UN SOLO BLOQUE HTML GRID (100% INMUNE A RECORTE EN MÓVIL)
+    pockets_html = f'''
+    <div class="pockets-grid">
+        <div class="pocket-card">
+            <div class="pocket-info">
+                <div class="pocket-title">Bóveda Vitalicia (1%)</div>
+                <div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{boveda_1:,.0f}</span></div>
+                <div class="pocket-sub">Capital intocable de por vida</div>
+            </div>
+            <div class="pocket-line-icon">🔒</div>
+        </div>
+        <div class="pocket-card">
+            <div class="pocket-info">
+                <div class="pocket-title">Fondo Emergencia / Inv. (9%)</div>
+                <div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{fondo_9:,.0f}</span></div>
+                <div class="pocket-sub">Colchón y capital de inversión</div>
+            </div>
+            <div class="pocket-line-icon">🛡️</div>
+        </div>
+        <div class="pocket-card pocket-card-gold">
+            <div class="pocket-info">
+                <div class="pocket-title">Efectivo Libre</div>
+                <div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{movs_libre:,.0f}</span></div>
+                <div class="pocket-sub">Disponible tras peajes</div>
+            </div>
+            <div class="pocket-line-icon">👛</div>
+        </div>
+    </div>
+    '''
+    st.markdown(pockets_html, unsafe_allow_html=True)
 
     st.write("")
 
@@ -769,6 +779,9 @@ with col_izq:
 
 with col_der:
     # BOTONES GIGANTES
+    b_in_col, b_out_col = st.columns(1) if False else (st.container(), st.container())
+    # En PC van uno debajo del otro; en móvil los ponemos en 2 columnas reales
+    btn_c1, btn_c2 = st.columns(2) if False else (st.container(), st.container())
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
         st.session_state.seccion_activa = "Tablero"

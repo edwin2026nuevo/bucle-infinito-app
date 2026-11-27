@@ -416,7 +416,7 @@ st.markdown(f'''
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
 
     /* =====================================================================
-       ANULACIÓN TOTAL DE ANCHOS INLINE DE STREAMLIT EN CELULAR (<= 820px)
+       OVERRIDE AGRESIVO PARA CELULAR (<= 820px) CONTRA ESTILOS INLINE DE STREAMLIT
        ===================================================================== */
     @media (max-width: 820px) {{
         .block-container {{
@@ -424,6 +424,7 @@ st.markdown(f'''
             padding-left: 0.9rem !important;
             padding-right: 0.9rem !important;
             padding-bottom: 2.2rem !important;
+            max-width: 100vw !important;
         }}
         .top-navbar {{
             margin-bottom: 14px;
@@ -439,39 +440,43 @@ st.markdown(f'''
             font-size: 18px;
         }}
 
-        /* 1. Forzar 100% de ancho anulando style="width: calc(...)" de Streamlit */
-        div[data-testid="stHorizontalBlock"] {{
-            flex-wrap: wrap !important;
+        /* Apilar TODOS los contenedores horizontales de Streamlit al 100% de ancho */
+        [data-testid="stHorizontalBlock"] {{
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
             gap: 12px !important;
+            width: 100% !important;
         }}
-        div[data-testid="stHorizontalBlock"] > div {{
+        [data-testid="stHorizontalBlock"] > div {{
             width: 100% !important;
             min-width: 100% !important;
             max-width: 100% !important;
             flex: 1 1 100% !important;
         }}
 
-        /* 2. Los 3 bolsillos en 1 columna al 100% de ancho */
+        /* Bolsillos en 1 columna al 100% */
         .pockets-grid {{
             grid-template-columns: 1fr !important;
             gap: 10px !important;
+            width: 100% !important;
         }}
         .pocket-card {{
-            min-height: 92px;
+            min-height: 90px;
             padding: 15px 18px;
+            width: 100% !important;
         }}
         .pocket-amount {{
             font-size: 25px;
         }}
 
-        /* 3. Cuadrícula 3x2 para los 6 botones de navegación */
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
+        /* Excepción 1: Los 6 botones de navegación en cuadrícula 3x2 al 100% */
+        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
             display: grid !important;
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
             gap: 12px 6px !important;
             width: 100% !important;
         }}
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
+        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
             width: 100% !important;
             min-width: 0 !important;
             max-width: 100% !important;
@@ -483,14 +488,14 @@ st.markdown(f'''
             border-radius: 14px;
         }}
 
-        /* 4. Botones + INGRESO y − EGRESO abajo en fila completa 50% / 50% */
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
+        /* Excepción 2: Botones + INGRESO y - EGRESO lado a lado al 100% debajo */
+        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
-            gap: 12px !important;
+            gap: 10px !important;
             width: 100% !important;
         }}
-        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
+        [data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
             width: 100% !important;
             min-width: 0 !important;
             max-width: 100% !important;
@@ -506,7 +511,6 @@ st.markdown(f'''
             font-size: 16px !important;
         }}
 
-        /* 5. Formulario al 100% de ancho */
         div[data-testid="stForm"] {{
             padding: 16px !important;
             width: 100% !important;
@@ -515,9 +519,6 @@ st.markdown(f'''
             margin-top: 10px !important;
             height: 46px !important;
             width: 100% !important;
-        }}
-        div[data-testid="stFormSubmitButton"] button p {{
-            white-space: nowrap !important;
         }}
     }}
 </style>
@@ -801,14 +802,14 @@ with col_izq:
     st.markdown(tabla_completa, unsafe_allow_html=True)
 
 with col_der:
-    btn_c1, btn_c2 = st.columns(2)
-    with btn_c1:
-        if st.button("+ INGRESO", key="btn_in_big"):
-            st.session_state.modo_registro = "INGRESO"
-            st.session_state.seccion_activa = "Tablero"
-            st.rerun()
-    with btn_c2:
-        if st.button("− EGRESO", key="btn_out_big"):
-            st.session_state.modo_registro = "EGRESO"
-            st.session_state.seccion_activa = "Tablero"
-            st.rerun()
+    # DOS COLUMNAS PARA LOS BOTONES EN MÓVIL Y APILADOS EN PC
+    b_col1, b_col2 = st.columns(1), st.columns(1)
+    if st.button("+ INGRESO", key="btn_in_big"):
+        st.session_state.modo_registro = "INGRESO"
+        st.session_state.seccion_activa = "Tablero"
+        st.rerun()
+
+    if st.button("− EGRESO", key="btn_out_big"):
+        st.session_state.modo_registro = "EGRESO"
+        st.session_state.seccion_activa = "Tablero"
+        st.rerun()

@@ -164,14 +164,6 @@ st.markdown("""
         width: 100% !important;
     }
 
-    div[class*="st-key-btn_delete_row"] button {
-        background-color: #ba3b3b !important;
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: 12px !important;
-        margin-top: 26px !important;
-    }
-
     .custom-table {
         width: 100%;
         border-collapse: collapse;
@@ -219,9 +211,17 @@ def conectar_google_sheet():
         info = json.loads(st.secrets["gcp_json"])
     else:
         info = dict(st.secrets["gcp_service_account"])
+    
+    # Blindaje contra URLs recortadas al copiar/pegar en el navegador
+    info["auth_uri"] = "https://accounts.google.com/o/oauth2/auth"
+    info["token_uri"] = "https://oauth2.googleapis.com/token"
+    info["auth_provider_x509_cert_url"] = "https://www.googleapis.com/oauth2/v1/certs"
+    if "@" not in str(info.get("client_email", "")) or "://" in str(info.get("client_email", "")):
+        info["client_email"] = "bot-finanzas@finanzas-bucle.iam.gserviceaccount.com"
+
     creds = Credentials.from_service_account_info(info, scopes=scopes)
     cliente = gspread.authorize(creds)
-    url_sheet = st.secrets["sheet_url"]
+    url_sheet = st.secrets["sheet_url"].strip()
     return cliente.open_by_url(url_sheet).sheet1
 
 def datos_iniciales_df():

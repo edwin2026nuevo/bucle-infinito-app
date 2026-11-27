@@ -1,6 +1,7 @@
 import json
 import os
 import datetime
+import urllib.parse
 import pandas as pd
 import streamlit as st
 import gspread
@@ -34,17 +35,14 @@ bg_svg = '''
   </defs>
   <rect width="1600" height="900" fill="url(#baseGrad)"/>
   <rect width="1600" height="900" fill="url(#sunGlow)"/>
-  <!-- Curvas geométricas grandes de profundidad -->
   <circle cx="150" cy="780" r="460" fill="none" stroke="#ffffff" stroke-opacity="0.11" stroke-width="55"/>
   <circle cx="150" cy="780" r="320" fill="#ffffff" fill-opacity="0.05"/>
   <path d="M 980 0 L 1600 0 L 1600 900 L 760 900 Z" fill="#ffffff" fill-opacity="0.05"/>
-  <!-- Hexágono Moneda Superior Derecha -->
   <g transform="translate(1330, 290) rotate(8)">
     <polygon points="0,-165 143,-82 143,82 0,165 -143,82 -143,-82" fill="url(#coinFace)" stroke="#fff3b0" stroke-opacity="0.42" stroke-width="8"/>
     <polygon points="0,-130 112,-65 112,65 0,130 -112,65 -112,-65" fill="none" stroke="#fff3b0" stroke-opacity="0.30" stroke-width="4"/>
     <text x="0" y="34" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="115" fill="#fff8d6" fill-opacity="0.34">₿</text>
   </g>
-  <!-- Hexágono Moneda Inferior Derecha -->
   <g transform="translate(1330, 675) rotate(-6)">
     <polygon points="0,-165 143,-82 143,82 0,165 -143,82 -143,-82" fill="url(#coinFace)" stroke="#fff3b0" stroke-opacity="0.42" stroke-width="8"/>
     <polygon points="0,-130 112,-65 112,65 0,130 -112,65 -112,-65" fill="none" stroke="#fff3b0" stroke-opacity="0.30" stroke-width="4"/>
@@ -53,7 +51,6 @@ bg_svg = '''
 </svg>
 '''.strip().replace("\n", "")
 
-import urllib.parse
 bg_encoded = urllib.parse.quote(bg_svg)
 
 st.markdown(f'''
@@ -64,7 +61,7 @@ st.markdown(f'''
         font-family: 'Plus Jakarta Sans', sans-serif;
     }}
 
-    /* 3. FONDO POTENTE CON MONEDAS Y DESTELLOS DORADOS */
+    /* FONDO POTENTE CON MONEDAS Y DESTELLOS DORADOS */
     .stApp {{
         background-color: #e88914;
         background-image: url("data:image/svg+xml;utf8,{bg_encoded}");
@@ -101,6 +98,7 @@ st.markdown(f'''
         justify-content: center;
         font-size: 22px;
         box-shadow: 0 6px 14px rgba(22,36,62,0.25);
+        flex-shrink: 0;
     }}
     .brand-text {{
         font-size: 22px;
@@ -116,7 +114,7 @@ st.markdown(f'''
     .user-area {{
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
     }}
     .cloud-badge {{
         background: rgba(255, 255, 255, 0.25);
@@ -131,7 +129,7 @@ st.markdown(f'''
     .user-pill {{
         background-color: #16243e;
         color: #ffffff;
-        padding: 8px 20px;
+        padding: 8px 18px;
         border-radius: 30px;
         font-weight: 600;
         font-size: 13px;
@@ -141,7 +139,7 @@ st.markdown(f'''
         gap: 8px;
     }}
 
-    /* 4. TARJETAS DE BOLSILLOS CON BORDE INFERIOR DORADO/OSCURO ESTILO FINTECH */
+    /* TARJETAS DE BOLSILLOS CON BORDE INFERIOR */
     .pocket-card {{
         background-color: #ffffff;
         border-radius: 16px;
@@ -211,7 +209,7 @@ st.markdown(f'''
         flex-shrink: 0;
     }}
 
-    /* 2. BOTONES DE NAVEGACIÓN TIPO APP PERFECTAMENTE CENTRADOS */
+    /* BOTONES DE NAVEGACIÓN TIPO APP */
     .app-nav-card {{
         background: #ffffff;
         border-radius: 16px;
@@ -271,7 +269,7 @@ st.markdown(f'''
         text-shadow: 0 1px 4px rgba(0,0,0,0.28);
     }}
 
-    /* BOTONES GIGANTES INGRESO Y EGRESO CENTRADOS Y BLANCOS */
+    /* BOTONES GIGANTES INGRESO Y EGRESO */
     div[class*="st-key-btn_in_big"] button {{
         background: linear-gradient(145deg, #10b376, #0a8758) !important;
         color: #ffffff !important;
@@ -360,15 +358,20 @@ st.markdown(f'''
         background-color: #24385c !important;
     }}
 
-    /* 1. TABLA ALINEADA EXACTAMENTE AL ANCHO DE LA COLUMNA IZQUIERDA */
+    /* CONTENEDOR DE TABLA CON SCROLL HORIZONTAL SUAVE EN MÓVIL */
+    .table-responsive-wrapper {{
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        border-bottom: 5px solid #e5e9f0;
+        background-color: #ffffff;
+    }}
     .custom-table {{
         width: 100%;
         border-collapse: collapse;
         background-color: #ffffff;
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-        border-bottom: 5px solid #e5e9f0;
         font-size: 13.5px;
     }}
     .custom-table thead {{
@@ -381,12 +384,14 @@ st.markdown(f'''
         font-weight: 700;
         font-size: 12.5px;
         letter-spacing: 0.3px;
+        white-space: nowrap;
     }}
     .custom-table td {{
         padding: 12px 14px;
         border-bottom: 1px solid #f0f3f8;
         color: #16243e;
         font-weight: 600;
+        white-space: nowrap;
     }}
     .custom-table tbody tr:hover {{
         background-color: #fafbfd;
@@ -394,6 +399,110 @@ st.markdown(f'''
     .txt-gold {{color: #d48817 !important; font-weight: 700;}}
     .txt-green {{color: #0d9c66 !important; font-weight: 700;}}
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
+
+    /* =====================================================================
+       OPTIMIZACIÓN RESPONSIVE PARA PANTALLAS DE CELULAR (<= 768px)
+       ===================================================================== */
+    @media (max-width: 768px) {{
+        .block-container {{
+            padding-top: 0.9rem !important;
+            padding-left: 0.85rem !important;
+            padding-right: 0.85rem !important;
+            padding-bottom: 1.5rem !important;
+        }}
+        /* Encabezado compacto */
+        .top-navbar {{
+            margin-bottom: 14px;
+            gap: 8px;
+        }}
+        .brand-icon {{
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            border-radius: 10px;
+        }}
+        .brand-text {{
+            font-size: 18px;
+        }}
+        .cloud-badge {{
+            padding: 5px 10px;
+            font-size: 11px;
+        }}
+        .user-pill {{
+            padding: 6px 12px;
+            font-size: 12px;
+        }}
+
+        /* Tarjetas de bolsillos apiladas cómodamente sin exceso de altura */
+        .pocket-card {{
+            height: auto !important;
+            min-height: 92px;
+            padding: 14px 16px;
+            margin-bottom: 4px;
+        }}
+        .pocket-amount {{
+            font-size: 24px;
+        }}
+        .pocket-line-icon {{
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }}
+
+        /* Cuadrícula 3x2 para los 6 iconos de navegación en móvil */
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 10px 6px !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div[data-testid="stColumn"] {{
+            width: 100% !important;
+            min-width: 0 !important;
+        }}
+        .app-nav-card, .app-nav-card-active {{
+            width: 56px;
+            height: 56px;
+            font-size: 23px;
+            border-radius: 14px;
+        }}
+
+        /* Botones + INGRESO y − EGRESO: lado a lado y táctiles (64px alto) */
+        div[data-testid="stColumn"]:has(div[class*="st-key-btn_in_big"]) > div[data-testid="stVerticalBlock"] {{
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+            margin-top: 8px !important;
+        }}
+        div[data-testid="stColumn"]:has(div[class*="st-key-btn_in_big"]) div[data-testid="stVerticalBlockBorderWrapper"] {{
+            width: 100% !important;
+        }}
+        div[class*="st-key-btn_in_big"] button,
+        div[class*="st-key-btn_out_big"] button {{
+            height: 64px !important;
+            border-radius: 14px !important;
+        }}
+        div[class*="st-key-btn_in_big"] button p,
+        div[class*="st-key-btn_out_big"] button p {{
+            font-size: 16px !important;
+        }}
+
+        /* Formulario más compacto y botón de envío sin margen excesivo */
+        div[data-testid="stForm"] {{
+            padding: 16px 16px;
+        }}
+        div[data-testid="stFormSubmitButton"] button {{
+            margin-top: 10px !important;
+            height: 46px !important;
+        }}
+
+        /* Tabla cómoda para deslizar con el dedo */
+        .custom-table {{
+            font-size: 12.5px;
+        }}
+        .custom-table th, .custom-table td {{
+            padding: 10px 10px;
+        }}
+    }}
 </style>
 ''', unsafe_allow_html=True)
 
@@ -477,11 +586,11 @@ abonos_deuda = abs(df[df["Categoría"] == "Deuda"]["Monto_Neto"].sum())
 estado_nube = "☁️ Sincronizado" if usar_google_sheets() else "💻 Local"
 st.markdown(f'<div class="top-navbar"><div class="brand-logo"><div class="brand-icon">🔄</div><div class="brand-text">BUCLE<span>INFINITO</span></div></div><div class="user-area"><div class="cloud-badge">{estado_nube}</div><div class="user-pill">🇨🇴 Edwin Alexander</div></div></div>', unsafe_allow_html=True)
 
-# --- ESTRUCTURA PRINCIPAL DE DOS COLUMNAS ---
+# --- ESTRUCTURA PRINCIPAL ---
 col_izq, col_der = st.columns([4.3, 1], gap="medium")
 
 with col_izq:
-    # TARJETAS DE BOLSILLOS CON BORDE INFERIOR
+    # TARJETAS DE BOLSILLOS
     b1, b2, b3 = st.columns(3, gap="medium")
     with b1:
         st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">Bóveda Vitalicia (1%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{boveda_1:,.0f}</span></div><div class="pocket-sub">Capital intocable de por vida</div></div><div class="pocket-line-icon">🔒</div></div>', unsafe_allow_html=True)
@@ -492,7 +601,7 @@ with col_izq:
 
     st.write("")
 
-    # BOTONES DE NAVEGACIÓN TIPO APP CENTRADOS
+    # BOTONES DE NAVEGACIÓN TIPO APP
     nav_cols = st.columns(6, gap="small")
     secciones = [
         ("Tablero", "🎛️", "Tablero"),
@@ -632,7 +741,7 @@ with col_izq:
 
     st.write("")
 
-    # 1. TABLA DENTRO DE col_izq PARA QUEDAR PERFECTAMENTE ALINEADA CON EL FORMULARIO Y BOLSILLOS
+    # TABLA ENVUELTA EN CONTENEDOR RESPONSIVE PARA SCROLL HORIZONTAL LIMPIO EN CELULAR
     filas_html = ""
     for idx, row in df.head(25).iterrows():
         p1_txt = f"-${abs(row['Peaje_1']):,.0f}" if row["Peaje_1"] != 0 else "$0"
@@ -649,17 +758,15 @@ with col_izq:
 
         filas_html += f'<tr><td><strong>#{idx}</strong></td><td>{row["Fecha"]}</td><td>{row["Tipo"]}</td><td>{row["Categoría"]}</td><td class="{p1_cls}">{p1_txt}</td><td class="{p9_cls}">{p9_txt}</td><td class="{neto_cls}">{neto_txt}</td><td>{row["Bolsillo"]}</td></tr>'
 
-    tabla_completa = f'<table class="custom-table"><thead><tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>1% Peaje</th><th>9% Peaje</th><th>Monto Neto</th><th>Bolsillo</th></tr></thead><tbody>{filas_html}</tbody></table>'
+    tabla_completa = f'<div class="table-responsive-wrapper"><table class="custom-table"><thead><tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>1% Peaje</th><th>9% Peaje</th><th>Monto Neto</th><th>Bolsillo</th></tr></thead><tbody>{filas_html}</tbody></table></div>'
     st.markdown(tabla_completa, unsafe_allow_html=True)
 
 with col_der:
-    # BOTONES GIGANTES CON SIGNO BLANCO PURO Y CENTRADO
+    # BOTONES GIGANTES (En PC verticales a la derecha; en celular lado a lado cómodos)
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
         st.session_state.seccion_activa = "Tablero"
         st.rerun()
-
-    st.write("")
 
     if st.button("− EGRESO", key="btn_out_big"):
         st.session_state.modo_registro = "EGRESO"

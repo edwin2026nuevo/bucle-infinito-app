@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bucle Infinito - Control Financiero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body {
+      min-height: 100vh;
+      background-color: #d88218;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f6b93b'/%3E%3Cstop offset='45%25' stop-color='%23e58e26'/%3E%3Cstop offset='100%25' stop-color='%23b34712'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url(%23bg)'/%3E%3Ccircle cx='180' cy='140' r='340' fill='%23ffffff' fill-opacity='0.08'/%3E%3Cpath d='M0,620 Q420,460 880,680 T1600,520 L1600,900 L0,900 Z' fill='%238c2d08' fill-opacity='0.22'/%3E%3Cpolygon points='1360,120 1470,185 1470,315 1360,380 1250,315 1250,185' fill='%23ffffff' fill-opacity='0.07' stroke='%23ffffff' stroke-opacity='0.14' stroke-width='3'/%3E%3Ctext x='1322' y='285' fill='%23ffffff' fill-opacity='0.11' font-size='115' font-family='Arial' font-weight='bold'%3E%E2%82%BF%3C/text%3E%3Cpolygon points='1450,430 1570,500 1570,640 1450,710 1330,640 1330,500' fill='%23ffffff' fill-opacity='0.06' stroke='%23ffffff' stroke-opacity='0.12' stroke-width='3'/%3E%3Ctext x='1415' y='610' fill='%23ffffff' fill-opacity='0.10' font-size='120' font-family='Arial' font-weight='bold'%3E%24%3C/text%3E%3C/svg%3E");
+      background-size: cover;
+      background-attachment: fixed;
+      color: #16243e;
+      padding: 20px 16px 40px;
+    }
+    .container { max-width: 1240px; margin: 0 auto; }
+
+    /* HEADER */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: #16243e; color: #f6b93b;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .brand-text { font-size: 21px; font-weight: 800; color: #16243e; letter-spacing: -0.4px; }
+    .brand-text span { color: #ffffff; }
+    .user-area { display: flex; align-items: center; gap: 10px; }
+    .sync-badge {
+      background: rgba(255,255,255,0.9); color: #0d9c66;
+      padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+    .user-pill {
+      background: #16243e; color: #ffffff; padding: 8px 18px;
+      border-radius: 30px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 5px 15px rgba(22,36,62,0.28);
+    }
+
+    /* MAIN GRID */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    /* POCKETS */
+    .pockets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .pocket-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 5px solid #e2e8f0;
+    }
+    .pocket-card.active { border-bottom-color: #e58e26; }
+    .pocket-title { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .pocket-val { font-size: 26px; font-weight: 800; color: #d98218; display: flex; align-items: center; gap: 6px; }
+    .coin-dot {
+      width: 20px; height: 20px; border-radius: 50%; background: #f6b93b;
+      color: #ffffff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .pocket-sub { font-size: 11px; color: #64748b; margin-top: 5px; font-weight: 500; }
+    .pocket-icon {
+      width: 44px; height: 44px; border-radius: 12px; background: #fff7ed;
+      border: 1.5px solid #fed7aa; color: #d98218;
+      display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+
+    /* ACTION BUTTONS (RIGHT ON PC, TOP ON MOBILE) */
+    .actions-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .btn-big {
+      border: none; border-radius: 16px; padding: 26px 14px;
+      color: #ffffff; font-size: 17px; font-weight: 800; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18); transition: transform 0.15s;
+    }
+    .btn-big:active { transform: scale(0.97); }
+    .btn-in { background: linear-gradient(135deg, #10b981, #059669); }
+    .btn-out { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .btn-big span.plus { font-size: 26px; line-height: 1; }
+
+    /* NAV APPS */
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      background: transparent; border: none; cursor: pointer;
+    }
+    .nav-box {
+      width: 58px; height: 58px; border-radius: 16px; background: #ffffff;
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12); transition: all 0.15s;
+      border: 3px solid transparent;
+    }
+    .nav-item.active .nav-box { border-color: #16243e; transform: translateY(-2px); }
+    .nav-label { font-size: 12px; font-weight: 700; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+    /* PANEL / FORM CARD */
+    .card-panel {
+      background: #ffffff; border-radius: 16px; padding: 20px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12); margin-bottom: 18px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr 1fr;
+      gap: 14px;
+      align-items: end;
+    }
+    .field label { display: block; font-size: 12px; font-weight: 700; color: #16243e; margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1.5px solid #cbd5e1; font-size: 14px; font-weight: 600; color: #16243e;
+      background: #f8fafc;
+    }
+    .btn-submit {
+      width: 100%; padding: 11px 16px; border: none; border-radius: 10px;
+      background: #16243e; color: #ffffff; font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .btn-submit:hover { background: #23375c; }
+    .btn-danger { background: #dc2626; }
+
+    /* TABLE */
+    .table-wrap {
+      background: #ffffff; border-radius: 16px; overflow-x: auto;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 650px; font-size: 13px; }
+    thead { background: #16243e; color: #ffffff; }
+    th { padding: 14px 14px; text-align: left; font-weight: 700; }
+    td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #16243e; }
+    .txt-gold { color: #d98218; font-weight: 700; }
+    .txt-green { color: #059669; font-weight: 700; }
+    .txt-red { color: #dc2626; font-weight: 700; }
+
+    /* RESPONSIVE MOBILE */
+    @media (max-width: 860px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .actions-panel {
+        order: -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .btn-big { padding: 16px 10px; flex-direction: row; font-size: 15px; }
+      .btn-big span.plus { font-size: 20px; }
+      .pockets-grid { grid-template-columns: 1fr; gap: 12px; }
+      .nav-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- HEADER -->
+  <div class="navbar">
+    <div class="brand">
+      <div class="brand-icon">🔄</div>
+      <div class="brand-text">BUCLE<span>INFINITO</span></div>
+    </div>
+    <div class="user-area">
+      <div class="sync-badge" id="syncStatus">☁️ Cargando...</div>
+      <div class="user-pill">🇨🇴 Edwin Alexander</div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <!-- LEFT CONTENT -->
+    <div>
+      <!-- 3 POCKETS -->
+      <div class="pockets-grid">
+        <div class="pocket-card">
+          <div>
+            <div class="pocket-title">Bóveda Vitalicia 1%</div>
+            <div class="pocket-val"><span class="coin-dot">$</span><span id="valBoveda">0</span></div>
+            <div class="pocket-sub">Ahorro intocable</div>
+          </div>
+          <div class="pocket-icon">🔒</div>
+        </div>
+        <div class="pocket-card">
+          <div>
+            <div class="pocket-title">Fondo Emergencia / Inv. 9%</div>
+            <div class="pocket-val"><span class="coin-dot">$</span><span id="valFondo9">0</span></div>
+            <div class="pocket-sub">Colchón e Inversión</div>
+          </div>
+          <div class="pocket-icon">🛡️</div>
+        </div>
+        <div class="pocket-card active">
+          <div>
+            <div class="pocket-title">Efectivo Libre</div>
+            <div class="pocket-val"><span class="coin-dot">$</span><span id="valLibre">0</span></div>
+            <div class="pocket-sub">Disponible tras peajes</div>
+          </div>
+          <div class="pocket-icon">👛</div>
+        </div>
+      </div>
+
+      <!-- 6 NAV ICONS -->
+      <div class="nav-grid">
+        <button class="nav-item active" onclick="setTab('tablero', this)">
+          <div class="nav-box">🎛️</div><span class="nav-label">Tablero</span>
+        </button>
+        <button class="nav-item" onclick="setTab('editar', this)">
+          <div class="nav-box">✏️</div><span class="nav-label">Editar</span>
+        </button>
+        <button class="nav-item" onclick="setTab('inversiones', this)">
+          <div class="nav-box">📈</div><span class="nav-label">Inversiones</span>
+        </button>
+        <button class="nav-item" onclick="setTab('deudas', this)">
+          <div class="nav-box">💳</div><span class="nav-label">Deudas</span>
+        </button>
+        <button class="nav-item" onclick="setTab('metas', this)">
+          <div class="nav-box">🏆</div><span class="nav-label">Metas</span>
+        </button>
+        <button class="nav-item" onclick="exportCSV()">
+          <div class="nav-box">📥</div><span class="nav-label">Exportar</span>
+        </button>
+      </div>
+
+      <!-- DYNAMIC PANEL -->
+      <div class="card-panel" id="dynamicPanel"></div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#ID</th>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Categoría</th>
+              <th>1% Peaje</th>
+              <th>9% Peaje</th>
+              <th>Monto Neto</th>
+              <th>Bolsillo</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RIGHT / TOP ACTION BUTTONS -->
+    <div class="actions-panel">
+      <button class="btn-big btn-in" onclick="setMode('INGRESO')">
+        <span class="plus">+</span> INGRESO
+      </button>
+      <button class="btn-big btn-out" onclick="setMode('EGRESO')">
+        <span class="plus">−</span> EGRESO
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbxecNQa1pd3D5M3Y9oa92OnCkngW65z0mbeIuiljI351feKXSSj2endVmey90v9lqSuFg/exec";
+  let registros = [];
+  let currentTab = "tablero";
+  let currentMode = "INGRESO";
+
+  const fmt = (n) => Number(n || 0).toLocaleString("es-CO");
+
+  function formatFecha(f) {
+    if (!f) return "";
+    if (String(f).includes("T")) {
+      const d = new Date(f);
+      return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    }
+    return f;
+  }
+
+  async function cargarDatos() {
+    document.getElementById("syncStatus").textContent = "⏳ Sincronizando...";
+    try {
+      const res = await fetch(API_URL);
+      registros = await res.json();
+      document.getElementById("syncStatus").textContent = "☁️ Google Sheets";
+      renderAll();
+    } catch (e) {
+      document.getElementById("syncStatus").textContent = "⚠️ Error de red";
+    }
+  }
+
+  function renderAll() {
+    let boveda1 = 0, ing9 = 0, egr9 = 0, libre = 0, invertido = 0, trading = 0, deudas = 0;
+
+    registros.forEach(r => {
+      const p1 = Number(r["Peaje_1"] || 0);
+      const p9 = Number(r["Peaje_9"] || 0);
+      const neto = Number(r["Monto_Neto"] || 0);
+      const tipo = r["Tipo"];
+      const cat = r["Categoría"];
+      const bol = r["Bolsillo"];
+
+      boveda1 += Math.abs(p1);
+      ing9 += Math.abs(p9);
+      if (tipo === "Egreso" && bol === "Fondo 9%") egr9 += neto;
+      if (bol === "Efectivo Libre") libre += neto;
+      if (tipo === "Egreso" && bol === "Fondo 9%" && cat === "Enviar a Inversión") invertido += Math.abs(neto);
+      if (tipo === "Ingreso" && cat === "Trading (Ganancias)") trading += Number(r["Bruto"] || 0);
+      if (cat === "Deuda") deudas += Math.abs(neto);
+    });
+
+    const fondo9 = ing9 + egr9;
+    document.getElementById("valBoveda").textContent = fmt(boveda1);
+    document.getElementById("valFondo9").textContent = fmt(fondo9);
+    document.getElementById("valLibre").textContent = fmt(libre);
+
+    // Render Table
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = registros.slice(0, 30).map((r, idx) => {
+      const p1 = Number(r["Peaje_1"] || 0);
+      const p9 = Number(r["Peaje_9"] || 0);
+      const neto = Number(r["Monto_Neto"] || 0);
+      return `<tr>
+        <td>#${idx}</td>
+        <td>${formatFecha(r["Fecha"])}</td>
+        <td>${r["Tipo"]}</td>
+        <td>${r["Categoría"]}</td>
+        <td class="${p1 !== 0 ? 'txt-gold' : ''}">${p1 !== 0 ? '-$' + fmt(Math.abs(p1)) : '$0'}</td>
+        <td class="${p9 !== 0 ? 'txt-gold' : ''}">${p9 !== 0 ? '-$' + fmt(Math.abs(p9)) : '$0'}</td>
+        <td class="${neto >= 0 ? 'txt-green' : 'txt-red'}">${neto >= 0 ? '+$' + fmt(neto) : '-$' + fmt(Math.abs(neto))}</td>
+        <td>${r["Bolsillo"] || "Efectivo Libre"}</td>
+      </tr>`;
+    }).join("");
+
+    renderPanel({ fondo9, invertido, trading, deudas });
+  }
+
+  function setTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    renderAll();
+  }
+
+  function setMode(mode) {
+    currentMode = mode;
+    currentTab = "tablero";
+    document.querySelectorAll(".nav-item").forEach((el, i) => el.classList.toggle("active", i === 0));
+    renderAll();
+  }
+
+  function renderPanel(stats) {
+    const panel = document.getElementById("dynamicPanel");
+    const hoy = new Date().toISOString().split("T")[0];
+
+    if (currentTab === "tablero") {
+      if (currentMode === "INGRESO") {
+        panel.innerHTML = `
+          <div class="form-grid">
+            <div class="field"><label>Fecha</label><input type="date" id="inFecha" value="${hoy}"></div>
+            <div class="field"><label>Fuente de Ingreso</label>
+              <select id="inCat">
+                <option>Moto</option>
+                <option>Trading (Ganancias)</option>
+                <option>Salario / Extra</option>
+              </select>
+            </div>
+            <div class="field"><label>Monto Bruto ($)</label><input type="number" id="inMonto" placeholder="Ej: 15000"></div>
+            <button class="btn-submit" onclick="guardarRegistro('INGRESO')">Registrar Ingreso</button>
+          </div>`;
+      } else {
+        panel.innerHTML = `
+          <div class="form-grid">
+            <div class="field"><label>Descontar de</label>
+              <select id="outBolsillo" onchange="actualizarCatsEgreso()">
+                <option value="Efectivo Libre">Efectivo Libre</option>
+                <option value="Fondo 9%">Fondo 9%</option>
+              </select>
+            </div>
+            <div class="field"><label>Categoría</label>
+              <select id="outCat">
+                <option>Gasolina</option>
+                <option>Deuda</option>
+                <option>Comida / Gustos</option>
+                <option>Otro Gasto</option>
+              </select>
+            </div>
+            <div class="field"><label>Monto ($)</label><input type="number" id="outMonto" placeholder="Ej: 5000"></div>
+            <button class="btn-submit btn-danger" onclick="guardarRegistro('EGRESO')">Registrar Egreso</button>
+          </div>`;
+      }
+    } else if (currentTab === "editar") {
+      const opts = registros.slice(0, 25).map((r, i) => `<option value="${i}">#${i} | ${formatFecha(r.Fecha)} | ${r.Categoría} ($${fmt(Math.abs(r.Monto_Neto))})</option>`).join("");
+      panel.innerHTML = `
+        <div class="form-grid">
+          <div class="field"><label>Seleccionar #ID</label><select id="editIdx">${opts}</select></div>
+          <div class="field"><label>Nuevo Monto ($)</label><input type="number" id="editMonto" placeholder="Nuevo valor"></div>
+          <button class="btn-submit" onclick="editarRegistro()">Guardar Cambio</button>
+          <button class="btn-submit btn-danger" onclick="borrarRegistro()">🗑️ Eliminar Fila</button>
+        </div>`;
+    } else if (currentTab === "inversiones") {
+      panel.innerHTML = `<strong>📈 Bucle de Inversiones:</strong> Capital enviado desde Fondo 9%: <span class="txt-gold">$${fmt(stats.invertido)}</span> &nbsp;|&nbsp; Ganancias retornadas (Trading): <span class="txt-green">$${fmt(stats.trading)}</span>`;
+    } else if (currentTab === "deudas") {
+      panel.innerHTML = `<strong>💳 Control de Deudas:</strong> Total abonado a deudas desde Efectivo Libre: <span class="txt-red">$${fmt(stats.deudas)}</span>`;
+    } else if (currentTab === "metas") {
+      const meta = 100000;
+      const pct = Math.min(Math.round((stats.fondo9 / meta) * 100), 100);
+      panel.innerHTML = `<strong>🏆 Meta Colchón Fondo 9%:</strong> $${fmt(stats.fondo9)} / $${fmt(meta)} (${pct}%)
+        <div style="background:#e2e8f0; border-radius:10px; height:14px; margin-top:8px; overflow:hidden;">
+          <div style="background:#059669; width:${pct}%; height:100%;"></div>
+        </div>`;
+    }
+  }
+
+  function actualizarCatsEgreso() {
+    const bol = document.getElementById("outBolsillo").value;
+    const cat = document.getElementById("outCat");
+    cat.innerHTML = bol === "Efectivo Libre"
+      ? `<option>Gasolina</option><option>Deuda</option><option>Comida / Gustos</option><option>Otro Gasto</option>`
+      : `<option>Enviar a Inversión</option><option>Emergencia Médica / Hogar</option>`;
+  }
+
+  async function guardarRegistro(modo) {
+    document.getElementById("syncStatus").textContent = "⏳ Guardando...";
+    let row = {};
+    if (modo === "INGRESO") {
+      const f = document.getElementById("inFecha").value.split("-");
+      const fecha = `${f[2]}/${f[1]}/${f[0]}`;
+      const cat = document.getElementById("inCat").value;
+      const bruto = Number(document.getElementById("inMonto").value);
+      if (!bruto || bruto <= 0) return alert("Ingresa un monto válido");
+      const p1 = -Math.round(bruto * 0.01);
+      const p9 = -Math.round(bruto * 0.09);
+      row = { Fecha: fecha, Tipo: "Ingreso", Categoría: cat, Bruto: bruto, Peaje_1: p1, Peaje_9: p9, Monto_Neto: bruto + p1 + p9, Bolsillo: "Efectivo Libre" };
+    } else {
+      const d = new Date();
+      const fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+      const bol = document.getElementById("outBolsillo").value;
+      const cat = document.getElementById("outCat").value;
+      const monto = Number(document.getElementById("outMonto").value);
+      if (!monto || monto <= 0) return alert("Ingresa un monto válido");
+      row = { Fecha: fecha, Tipo: "Egreso", Categoría: cat, Bruto: 0, Peaje_1: 0, Peaje_9: 0, Monto_Neto: -Math.abs(monto), Bolsillo: bol };
+    }
+    await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "add", row }) });
+    await cargarDatos();
+  }
+
+  async function editarRegistro() {
+    const idx = Number(document.getElementById("editIdx").value);
+    const nuevoMonto = Number(document.getElementById("editMonto").value);
+    if (!nuevoMonto || nuevoMonto <= 0) return alert("Ingresa el nuevo monto");
+    const r = registros[idx];
+    let updated = { ...r, Fecha: formatFecha(r.Fecha) };
+    if (r.Tipo === "Ingreso") {
+      const p1 = -Math.round(nuevoMonto * 0.01);
+      const p9 = -Math.round(nuevoMonto * 0.09);
+      updated.Bruto = nuevoMonto; updated.Peaje_1 = p1; updated.Peaje_9 = p9; updated.Monto_Neto = nuevoMonto + p1 + p9;
+    } else {
+      updated.Monto_Neto = -Math.abs(nuevoMonto);
+    }
+    document.getElementById("syncStatus").textContent = "⏳ Actualizando...";
+    await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "edit", rowNum: r._row, row: updated }) });
+    await cargarDatos();
+  }
+
+  async function borrarRegistro() {
+    const idx = Number(document.getElementById("editIdx").value);
+    const r = registros[idx];
+    document.getElementById("syncStatus").textContent = "⏳ Eliminando...";
+    await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "delete", rowNum: r._row }) });
+    await cargarDatos();
+  }
+
+  function exportCSV() {
+    const headers = ["Fecha,Tipo,Categoría,Bruto,Peaje_1,Peaje_9,Monto_Neto,Bolsillo"];
+    const lines = registros.map(r => `${formatFecha(r.Fecha)},${r.Tipo},${r.Categoría},${r.Bruto},${r.Peaje_1},${r.Peaje_9},${r.Monto_Neto},${r.Bolsillo}`);
+    const blob = new Blob([headers.concat(lines).join("\n")], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "historial_bucle_infinito.csv";
+    a.click();
+  }
+
+  cargarDatos();
+</script>
+</body>
+</html>

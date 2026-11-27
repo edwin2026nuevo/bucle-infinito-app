@@ -13,27 +13,75 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- ESTILOS VISUALES ---
-st.markdown("""
+st.markdown('''
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
     .stApp {
-        background: linear-gradient(135deg, #d89b28 0%, #e07b22 50%, #c85219 100%);
+        background:
+            radial-gradient(circle at 88% 35%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 22%, transparent 23%),
+            radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 20%, transparent 21%),
+            radial-gradient(circle at 12% 85%, rgba(255, 255, 255, 0.10) 0%, transparent 28%),
+            linear-gradient(135deg, #dda22b 0%, #e28221 48%, #c95218 100%);
         color: #16243e;
     }
     header[data-testid="stHeader"] {background: transparent;}
-    .block-container {padding-top: 1.5rem; padding-bottom: 2rem; max-width: 1250px;}
+    .block-container {padding-top: 1.4rem; padding-bottom: 2.5rem; max-width: 1260px;}
 
-    .user-badge {
+    .top-navbar {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .brand-logo {
+        display: flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 18px;
     }
-    .user-label {
+    .brand-icon {
+        background: #16243e;
+        color: #f3b136;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 6px 14px rgba(22,36,62,0.22);
+    }
+    .brand-text {
+        font-size: 21px;
         font-weight: 800;
-        color: #16243e;
-        font-size: 14px;
+        color: #ffffff;
+        letter-spacing: 0.8px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+    .brand-text span {
+        font-weight: 500;
+        opacity: 0.9;
+    }
+    .user-area {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .cloud-badge {
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(6px);
+        color: #ffffff;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid rgba(255,255,255,0.3);
     }
     .user-pill {
         background-color: #16243e;
@@ -41,105 +89,172 @@ st.markdown("""
         padding: 8px 20px;
         border-radius: 30px;
         font-weight: 600;
-        font-size: 14px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+        font-size: 13px;
+        box-shadow: 0 6px 15px rgba(22,36,62,0.25);
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .pocket-card {
         background-color: #ffffff;
-        border-radius: 18px;
-        padding: 18px 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        border-radius: 16px;
+        padding: 18px 22px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.10);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 128px;
+        height: 118px;
+        transition: transform 0.2s ease;
+    }
+    .pocket-card:hover {
+        transform: translateY(-2px);
     }
     .pocket-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #2c3a4f;
+        margin-bottom: 6px;
+    }
+    .pocket-value-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .coin-dot {
+        background: linear-gradient(135deg, #f6bd41, #e08b1b);
+        color: #ffffff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         font-size: 12px;
         font-weight: 800;
-        color: #16243e;
-        text-transform: uppercase;
-        margin-bottom: 4px;
+        flex-shrink: 0;
     }
     .pocket-amount {
-        font-size: 28px;
+        font-size: 27px;
         font-weight: 800;
-        color: #c88214;
+        color: #d48817;
         line-height: 1.1;
     }
-    .pocket-amount-box {
-        border: 2px solid #e09f24;
-        border-radius: 10px;
-        padding: 2px 10px;
-        display: inline-block;
-        font-size: 26px;
-        font-weight: 800;
-        color: #c88214;
-        margin: 2px 0;
-    }
     .pocket-sub {
-        font-size: 12px;
-        color: #5a6577;
-        margin-top: 4px;
+        font-size: 11.5px;
+        color: #7a869a;
+        margin-top: 6px;
         font-weight: 500;
     }
-    .pocket-icon {
-        background: linear-gradient(135deg, #f3b136, #d98218);
+    .pocket-line-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background-color: #f4f7fb;
+        border: 1.5px solid #e1e8f2;
         color: #16243e;
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        font-size: 20px;
         flex-shrink: 0;
     }
 
-    div.stButton > button {
-        background-color: #16243e !important;
-        color: #ffffff !important;
-        border: 2px solid #2b3d5c !important;
-        border-radius: 25px !important;
-        font-weight: 700 !important;
-        padding: 8px 10px !important;
-        width: 100% !important;
-        font-size: 13px !important;
+    .app-nav-card {
+        background: #ffffff;
+        border-radius: 16px;
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 4px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        border: 3px solid transparent;
     }
-    div.stButton > button:hover {
-        border-color: #f3b136 !important;
-        color: #f3b136 !important;
+    .app-nav-card-active {
+        background: #ffffff;
+        border-radius: 16px;
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 4px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        box-shadow: 0 8px 18px rgba(22,36,62,0.28);
+        border: 3px solid #16243e;
+    }
+
+    div[class*="st-key-nav_"] button {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 2px 4px !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    div[class*="st-key-nav_"] button p {
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        margin: 0 !important;
+        text-align: center !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.22);
+    }
+    div[class*="st-key-nav_"] button:hover {
+        transform: translateY(-1px);
     }
 
     div[class*="st-key-btn_in_big"] button {
-        background-color: #0d9c66 !important;
+        background: linear-gradient(145deg, #10b376, #0a8758) !important;
         color: #ffffff !important;
-        border: none !important;
+        border: 2px solid rgba(255,255,255,0.28) !important;
         border-radius: 18px !important;
-        height: 128px !important;
-        font-size: 20px !important;
+        height: 118px !important;
+        width: 100% !important;
+        box-shadow: 0 10px 22px rgba(10,135,88,0.32) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    div[class*="st-key-btn_in_big"] button p {
+        font-size: 18px !important;
         font-weight: 800 !important;
-        box-shadow: 0 8px 18px rgba(13,156,102,0.35) !important;
+        letter-spacing: 0.6px !important;
+        text-align: center !important;
+        margin: 0 !important;
     }
     div[class*="st-key-btn_in_big"] button:hover {
-        background-color: #0b8557 !important;
-        color: #ffffff !important;
+        background: linear-gradient(145deg, #12c482, #0c9662) !important;
+        transform: translateY(-2px);
     }
 
     div[class*="st-key-btn_out_big"] button {
-        background-color: #ba3b3b !important;
+        background: linear-gradient(145deg, #cf4646, #a62c2c) !important;
         color: #ffffff !important;
-        border: none !important;
+        border: 2px solid rgba(255,255,255,0.28) !important;
         border-radius: 18px !important;
-        height: 128px !important;
-        font-size: 20px !important;
+        height: 118px !important;
+        width: 100% !important;
+        box-shadow: 0 10px 22px rgba(166,44,44,0.32) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    div[class*="st-key-btn_out_big"] button p {
+        font-size: 18px !important;
         font-weight: 800 !important;
-        box-shadow: 0 8px 18px rgba(186,59,59,0.35) !important;
+        letter-spacing: 0.6px !important;
+        text-align: center !important;
+        margin: 0 !important;
     }
     div[class*="st-key-btn_out_big"] button:hover {
-        background-color: #9e2f2f !important;
-        color: #ffffff !important;
+        background: linear-gradient(145deg, #dc4f4f, #b53232) !important;
+        transform: translateY(-2px);
     }
 
     div[data-testid="stForm"] {
@@ -147,12 +262,12 @@ st.markdown("""
         border-radius: 18px;
         padding: 20px 24px;
         border: none;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.10);
     }
     div[data-testid="stForm"] label {
         color: #16243e !important;
         font-weight: 700 !important;
-        font-size: 14px !important;
+        font-size: 13.5px !important;
     }
     div[data-testid="stFormSubmitButton"] button {
         background-color: #16243e !important;
@@ -162,15 +277,19 @@ st.markdown("""
         padding: 10px 20px !important;
         margin-top: 26px !important;
         width: 100% !important;
+        border: none !important;
+    }
+    div[data-testid="stFormSubmitButton"] button:hover {
+        background-color: #24385c !important;
     }
 
     .custom-table {
         width: 100%;
         border-collapse: collapse;
         background-color: #ffffff;
-        border-radius: 16px;
+        border-radius: 18px;
         overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.10);
         font-size: 14px;
     }
     .custom-table thead {
@@ -178,24 +297,27 @@ st.markdown("""
         color: #ffffff;
     }
     .custom-table th {
-        padding: 14px 16px;
+        padding: 15px 18px;
         text-align: left;
         font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.3px;
     }
     .custom-table td {
-        padding: 12px 16px;
-        border-bottom: 1px solid #eef1f5;
+        padding: 13px 18px;
+        border-bottom: 1px solid #f0f3f8;
         color: #16243e;
         font-weight: 600;
     }
-    .txt-gold {color: #d98218 !important; font-weight: 700;}
+    .custom-table tbody tr:hover {
+        background-color: #fafbfd;
+    }
+    .txt-gold {color: #d48817 !important; font-weight: 700;}
     .txt-green {color: #0d9c66 !important; font-weight: 700;}
     .txt-red {color: #ba3b3b !important; font-weight: 700;}
 </style>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
-# --- CONEXIÓN A GOOGLE SHEETS ---
-COLUMNAS = ["Fecha", "Tipo", "Categoría", "Bruto", "Peaje_1", "Peaje_9", "Monto_Neto", "Bolsillo"]
 ARCHIVO_LOCAL = "bucle_infinito_datos.csv"
 
 def usar_google_sheets():
@@ -212,7 +334,6 @@ def conectar_google_sheet():
     else:
         info = dict(st.secrets["gcp_service_account"])
     
-    # Blindaje contra URLs recortadas al copiar/pegar en el navegador
     info["auth_uri"] = "https://accounts.google.com/o/oauth2/auth"
     info["token_uri"] = "https://oauth2.googleapis.com/token"
     info["auth_provider_x509_cert_url"] = "https://www.googleapis.com/oauth2/v1/certs"
@@ -265,7 +386,6 @@ if "seccion_activa" not in st.session_state:
 
 df = cargar_historial()
 
-# --- CÁLCULOS DEL SISTEMA BUCLE INFINITO ---
 boveda_1 = abs(df["Peaje_1"].sum())
 ingresos_9 = abs(df["Peaje_9"].sum())
 egresos_9 = df[(df["Tipo"] == "Egreso") & (df["Bolsillo"] == "Fondo 9%")]["Monto_Neto"].sum()
@@ -275,40 +395,35 @@ movs_libre = df[df["Bolsillo"] == "Efectivo Libre"]["Monto_Neto"].sum()
 capital_invertido = abs(df[(df["Tipo"] == "Egreso") & (df["Bolsillo"] == "Fondo 9%") & (df["Categoría"] == "Enviar a Inversión")]["Monto_Neto"].sum())
 abonos_deuda = abs(df[df["Categoría"] == "Deuda"]["Monto_Neto"].sum())
 
-# --- ENCABEZADO DE USUARIO ---
-estado_nube = "☁️ Google Sheets Conectado" if usar_google_sheets() else "💻 Modo Local"
-st.markdown(f"""
-<div class="user-badge">
-    <span class="user-label">{estado_nube} &nbsp;|&nbsp; USUARIO</span>
-    <div class="user-pill">👤 Edwin Alexander</div>
-</div>
-""", unsafe_allow_html=True)
+estado_nube = "☁️ Sincronizado" if usar_google_sheets() else "💻 Local"
+st.markdown(f'<div class="top-navbar"><div class="brand-logo"><div class="brand-icon">🔄</div><div class="brand-text">BUCLE<span>INFINITO</span></div></div><div class="user-area"><div class="cloud-badge">{estado_nube}</div><div class="user-pill">🇨🇴 Edwin Alexander</div></div></div>', unsafe_allow_html=True)
 
-# --- ESTRUCTURA PRINCIPAL ---
-col_izq, col_der = st.columns([4.2, 1], gap="medium")
+col_izq, col_der = st.columns([4.3, 1], gap="medium")
 
 with col_izq:
     b1, b2, b3 = st.columns(3, gap="medium")
     with b1:
-        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">BÓVEDA VITALICIA 1%</div><div class="pocket-amount">${boveda_1:,.0f}</div><div class="pocket-sub">Intocable</div></div><div class="pocket-icon">🔒</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">Bóveda Vitalicia (1%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{boveda_1:,.0f}</span></div><div class="pocket-sub">Capital intocable de por vida</div></div><div class="pocket-line-icon">🔒</div></div>', unsafe_allow_html=True)
     with b2:
-        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">FONDO 9%</div><div class="pocket-amount">${fondo_9:,.0f}</div><div class="pocket-sub">Emergencia e Inversión</div></div><div class="pocket-icon">🛡️</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">Fondo Emergencia / Inv. (9%)</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{fondo_9:,.0f}</span></div><div class="pocket-sub">Colchón y capital de inversión</div></div><div class="pocket-line-icon">🛡️</div></div>', unsafe_allow_html=True)
     with b3:
-        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">EFECTIVO LIBRE</div><div class="pocket-amount-box">${movs_libre:,.0f}</div><div class="pocket-sub">Disponible tras peajes</div></div><div class="pocket-icon">👛</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="pocket-card"><div><div class="pocket-title">Efectivo Libre</div><div class="pocket-value-row"><span class="coin-dot">$</span><span class="pocket-amount">{movs_libre:,.0f}</span></div><div class="pocket-sub">Disponible tras peajes</div></div><div class="pocket-line-icon">👛</div></div>', unsafe_allow_html=True)
 
     st.write("")
 
     nav_cols = st.columns(6, gap="small")
     secciones = [
-        ("Tablero", "🎛️ Tablero"),
-        ("Editar", "✏️ Editar / Borrar"),
-        ("Inversiones", "📈 Inversiones"),
-        ("Deudas", "💳 Deudas"),
-        ("Metas", "🏆 Metas"),
-        ("Exportar", "📥 Exportar")
+        ("Tablero", "🎛️", "Tablero"),
+        ("Editar", "✏️", "Editar"),
+        ("Inversiones", "📈", "Inversiones"),
+        ("Deudas", "💳", "Deudas"),
+        ("Metas", "🏆", "Metas"),
+        ("Exportar", "📥", "Exportar")
     ]
-    for idx, (clave, etiqueta) in enumerate(secciones):
+    for idx, (clave, icono, etiqueta) in enumerate(secciones):
         with nav_cols[idx]:
+            clase_card = "app-nav-card-active" if st.session_state.seccion_activa == clave else "app-nav-card"
+            st.markdown(f'<div class="{clase_card}">{icono}</div>', unsafe_allow_html=True)
             if st.button(etiqueta, key=f"nav_{clave}"):
                 st.session_state.seccion_activa = clave
                 st.rerun()
@@ -391,9 +506,9 @@ with col_izq:
                 valor_actual = float(fila_actual["Bruto"]) if fila_actual["Tipo"] == "Ingreso" else abs(float(fila_actual["Monto_Neto"]))
                 nuevo_monto = e3.number_input("Monto ($):", min_value=0.0, step=500.0, value=valor_actual)
                 with e4:
-                    btn_guardar = st.form_submit_button("💾 Guardar Cambios")
+                    btn_guardar = st.form_submit_button("💾 Guardar")
                 with e5:
-                    btn_borrar = st.form_submit_button("🗑️ Eliminar Fila")
+                    btn_borrar = st.form_submit_button("🗑️ Eliminar")
 
                 if btn_guardar and nuevo_monto > 0:
                     df.at[idx_sel, "Fecha"] = nueva_fecha
@@ -447,7 +562,6 @@ with col_der:
 
 st.write("")
 
-# --- TABLA INFERIOR CON ID ---
 filas_html = ""
 for idx, row in df.head(25).iterrows():
     p1_txt = f"-${abs(row['Peaje_1']):,.0f}" if row["Peaje_1"] != 0 else "$0"

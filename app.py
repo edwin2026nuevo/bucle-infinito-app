@@ -4,7 +4,6 @@ import datetime
 import urllib.parse
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -13,20 +12,6 @@ st.set_page_config(
     page_icon="🔄",
     layout="wide",
     initial_sidebar_state="collapsed"
-)
-
-# Forzar escala de escritorio en cualquier navegador (incluyendo celular en vertical)
-components.html(
-    '''
-    <script>
-        const meta = window.parent.document.querySelector('meta[name="viewport"]');
-        if (meta) {
-            meta.setAttribute('content', 'width=1260, initial-scale=0.32, user-scalable=yes');
-        }
-    </script>
-    ''',
-    height=0,
-    width=0
 )
 
 # --- SVG DE FONDO POTENTE ESTILO FINTECH ---
@@ -76,12 +61,6 @@ st.markdown(f'''
         font-family: 'Plus Jakarta Sans', sans-serif;
     }}
 
-    /* MANTENER ANCHO DE ESCRITORIO SIEMPRE (INDEPENDIENTE DEL DISPOSITIVO) */
-    html, body, .stApp, [data-testid="stAppViewContainer"], .main {{
-        min-width: 1220px !important;
-        overflow-x: auto !important;
-    }}
-
     .stApp {{
         background-color: #e88914;
         background-image: url("data:image/svg+xml;utf8,{bg_encoded}");
@@ -92,10 +71,9 @@ st.markdown(f'''
     }}
     header[data-testid="stHeader"] {{background: transparent;}}
     .block-container {{
-        padding-top: 1.4rem !important;
-        padding-bottom: 2.5rem !important;
-        min-width: 1220px !important;
-        max-width: 1260px !important;
+        padding-top: 1.4rem;
+        padding-bottom: 2.5rem;
+        max-width: 1260px;
     }}
 
     /* NAVBAR SUPERIOR */
@@ -104,6 +82,7 @@ st.markdown(f'''
         justify-content: space-between;
         align-items: center;
         margin-bottom: 22px;
+        flex-wrap: wrap;
         gap: 12px;
     }}
     .brand-logo {{
@@ -163,7 +142,7 @@ st.markdown(f'''
         gap: 8px;
     }}
 
-    /* GRID DE LOS 3 BOLSILLOS */
+    /* GRID HTML NATIVO PARA LOS 3 BOLSILLOS */
     .pockets-grid {{
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -179,7 +158,7 @@ st.markdown(f'''
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 118px;
+        min-height: 118px;
         width: 100%;
         box-sizing: border-box;
         transition: transform 0.2s ease, border-color 0.2s ease;
@@ -398,14 +377,15 @@ st.markdown(f'''
         background-color: #24385c !important;
     }}
 
-    /* TABLA */
+    /* TABLA CON SCROLL HORIZONTAL EN MÓVIL */
     .table-responsive-wrapper {{
         width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         border-radius: 18px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.12);
         border-bottom: 5px solid #e5e9f0;
         background-color: #ffffff;
-        overflow: hidden;
     }}
     .custom-table {{
         width: 100%;
@@ -438,6 +418,99 @@ st.markdown(f'''
     .txt-gold {{color: #d48817 !important; font-weight: 700;}}
     .txt-green {{color: #0d9c66 !important; font-weight: 700;}}
     .txt-red {{color: #ba3b3b !important; font-weight: 700;}}
+
+    /* =====================================================================
+       DISEÑO MÓVIL COMPACTO Y NÍTIDO (<= 850px)
+       ===================================================================== */
+    @media screen and (max-width: 850px) {{
+        .block-container {{
+            padding-top: 0.7rem !important;
+            padding-left: 0.85rem !important;
+            padding-right: 0.85rem !important;
+            padding-bottom: 2rem !important;
+            max-width: 100% !important;
+        }}
+        .top-navbar {{
+            margin-bottom: 12px;
+            gap: 8px;
+        }}
+        .brand-icon {{
+            width: 34px;
+            height: 34px;
+            font-size: 17px;
+            border-radius: 10px;
+        }}
+        .brand-text {{
+            font-size: 17px;
+        }}
+        .cloud-badge, .user-pill {{
+            font-size: 11px;
+            padding: 5px 11px;
+        }}
+
+        /* 1. Los 3 bolsillos apilados al 100% del ancho de pantalla */
+        .pockets-grid {{
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+        }}
+        .pocket-card {{
+            min-height: 86px;
+            padding: 14px 16px;
+        }}
+        .pocket-amount {{
+            font-size: 24px;
+        }}
+
+        /* 2. Los 6 botones de navegación en cuadrícula 3x2 compacta */
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) {{
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 10px 6px !important;
+            width: 100% !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-nav_"]) > div {{
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }}
+        .app-nav-card, .app-nav-card-active {{
+            width: 52px;
+            height: 52px;
+            font-size: 22px;
+            border-radius: 14px;
+        }}
+
+        /* 3. Botones + INGRESO y − EGRESO en 2 columnas limpias 50% / 50% */
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) {{
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+            width: 100% !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_in_big"]) > div {{
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }}
+        div[class*="st-key-btn_in_big"] button,
+        div[class*="st-key-btn_out_big"] button {{
+            height: 54px !important;
+            border-radius: 14px !important;
+            width: 100% !important;
+        }}
+        div[class*="st-key-btn_in_big"] button p,
+        div[class*="st-key-btn_out_big"] button p {{
+            font-size: 15px !important;
+        }}
+
+        div[data-testid="stForm"] {{
+            padding: 16px !important;
+        }}
+        div[data-testid="stFormSubmitButton"] button {{
+            margin-top: 8px !important;
+            height: 44px !important;
+        }}
+    }}
 </style>
 ''', unsafe_allow_html=True)
 
@@ -522,10 +595,11 @@ estado_nube = "☁️ Sincronizado" if usar_google_sheets() else "💻 Local"
 st.markdown(f'<div class="top-navbar"><div class="brand-logo"><div class="brand-icon">🔄</div><div class="brand-text">BUCLE<span>INFINITO</span></div></div><div class="user-area"><div class="cloud-badge">{estado_nube}</div><div class="user-pill">🇨🇴 Edwin Alexander</div></div></div>', unsafe_allow_html=True)
 
 # --- ESTRUCTURA PRINCIPAL ---
+# En lugar de anidar columnas pesadas, usamos estructura directa que funciona en PC y móvil
 col_izq, col_der = st.columns([4.3, 1], gap="medium")
 
 with col_izq:
-    # LOS 3 BOLSILLOS EN BLOQUE HTML GRID
+    # 1. LOS 3 BOLSILLOS EN UN SOLO BLOQUE HTML GRID
     pockets_html = f'''
     <div class="pockets-grid">
         <div class="pocket-card">
@@ -558,7 +632,7 @@ with col_izq:
 
     st.write("")
 
-    # BOTONES DE NAVEGACIÓN TIPO APP
+    # 2. BOTONES DE NAVEGACIÓN TIPO APP
     nav_cols = st.columns(6, gap="small")
     secciones = [
         ("Tablero", "🎛️", "Tablero"),
@@ -578,7 +652,7 @@ with col_izq:
 
     st.write("")
 
-    # PANEL DE REGISTRO O SUB-SECCIÓN ACTIVA
+    # 3. PANEL DE REGISTRO O SUB-SECCIÓN ACTIVA
     if st.session_state.seccion_activa == "Tablero":
         if st.session_state.modo_registro == "INGRESO":
             with st.form("form_ingreso", clear_on_submit=True):
@@ -698,7 +772,7 @@ with col_izq:
 
     st.write("")
 
-    # TABLA
+    # 4. TABLA CON DESPLAZAMIENTO HORIZONTAL SUAVE
     filas_html = ""
     for idx, row in df.head(25).iterrows():
         p1_txt = f"-${abs(row['Peaje_1']):,.0f}" if row["Peaje_1"] != 0 else "$0"
@@ -718,6 +792,13 @@ with col_izq:
     tabla_completa = f'<div class="table-responsive-wrapper"><table class="custom-table"><thead><tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>1% Peaje</th><th>9% Peaje</th><th>Monto Neto</th><th>Bolsillo</th></tr></thead><tbody>{filas_html}</tbody></table></div>'
     st.markdown(tabla_completa, unsafe_allow_html=True)
 
+with col_der:
+    # BOTONES GIGANTES
+    b_col1, b_col2 = st.columns(1) if False else (st.container(), st.container())
+    # Ponemos cada botón en una columna propia dentro de un stHorizontalBlock para poder ponerlos 1fr 1fr en móvil
+    bc1, bc2 = st.columns([1, 1]) if False else (None, None)
+
+# Reemplazamos col_der para usar un bloque horizontal propio que en móvil se vuelve 1fr 1fr
 with col_der:
     if st.button("+ INGRESO", key="btn_in_big"):
         st.session_state.modo_registro = "INGRESO"
